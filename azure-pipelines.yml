@@ -3,17 +3,27 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- develop
+#trigger:
+#- develop
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world
-  displayName: 'Run a one-line script'
+jobs:
+- job: Hello_World
+  steps:
+  - script: echo Hello, world
+    displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - script: |
+      echo Add other tasks to build, test, and deploy your project.
+      echo See https://aka.ms/yaml
+    displayName: 'Run a multi-line script'
+- job: check_submodules
+  steps:
+  - script: scripts/test_submodule_updated.sh
+  #steps:
+  #- checkout: self
+  #  clean: true
+  #  submodules: recursive
+  #- script:  |
