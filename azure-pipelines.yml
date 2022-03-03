@@ -61,15 +61,15 @@ jobs:
       CONTAINER_NAME=geosx_build
       # Now we can build GEOSX.
       while sleep 5m; do echo "... still building ..."; done & 
-      docker run
-      --name=${CONTAINER_NAME}
-      --volume=${BUILD_SOURCESDIRECTORY}:${TRAVIS_BUILD_DIR_MOUNT_POINT}
-      --cap-add=ALL
-      -e HOST_CONFIG=${HOST_CONFIG:-host-configs/environment.cmake}
-      -e CMAKE_BUILD_TYPE
-      -e GEOSX_DIR=${GEOSX_DIR}
-      -e ENABLE_HYPRE=${ENABLE_HYPRE:-OFF}
-      -e ENABLE_HYPRE_CUDA=${ENABLE_HYPRE_CUDA:-OFF}
-      -e ENABLE_TRILINOS=${ENABLE_TRILINOS:-ON}
-      ${DOCKER_REPOSITORY}:${GEOSX_TPL_TAG}
+      docker run \
+      --name=${CONTAINER_NAME} \
+      --volume=${BUILD_SOURCESDIRECTORY}:${TRAVIS_BUILD_DIR_MOUNT_POINT} \
+      --cap-add=ALL \
+      -e HOST_CONFIG=${HOST_CONFIG:-host-configs/environment.cmake} \
+      -e CMAKE_BUILD_TYPE \
+      -e GEOSX_DIR=${GEOSX_DIR} \
+      -e ENABLE_HYPRE=${ENABLE_HYPRE:-OFF} \
+      -e ENABLE_HYPRE_CUDA=${ENABLE_HYPRE_CUDA:-OFF} \
+      -e ENABLE_TRILINOS=${ENABLE_TRILINOS:-ON} \
+      ${DOCKER_REPOSITORY}:${GEOSX_TPL_TAG} \
       ${TRAVIS_BUILD_DIR_MOUNT_POINT}/scripts/travis_build_and_test.sh ${BUILD_AND_TEST_ARGS};
