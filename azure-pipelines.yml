@@ -110,6 +110,8 @@ stages:
         echo See https://aka.ms/yaml
       displayName: 'Run a multi-line script'
   - job: build_and_test
+    # Use maximum time limit
+    timeoutInMinutes: 0
     strategy:
       matrix:
         # Builds only the geosx executable (timeout when building tests)
