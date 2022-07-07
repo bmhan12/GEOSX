@@ -8,7 +8,7 @@ git submodule update --init src/coreComponents/mesh/PAMELA
 git submodule update --init --recursive src/coreComponents/fileIO/coupling/hdf5_interface
 # The linux build relies on two environment variables DOCKER_REPOSITORY and GEOSX_TPL_TAG to define the TPL version.
 # And another CMAKE_BUILD_TYPE to define the build type we want for GEOSX.
-# Optional BUILD_AND_TEST_ARGS to pass arguments to travis_build_and_test.sh script.
+# Optional BUILD_AND_TEST_ARGS to pass arguments to build_test_helper.sh script.
 #
 # We extract the location of the GEOSX_TPL from the container...
 GEOSX_TPL_DIR=$(docker run --rm ${DOCKER_REPOSITORY}:${GEOSX_TPL_TAG} /bin/bash -c 'echo ${GEOSX_TPL_DIR}')
