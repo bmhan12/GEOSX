@@ -108,6 +108,9 @@ stages:
     steps:
     - script: |
         is_assigned=$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/bmhan12/GEOSX/pulls/3 | jq ".assignees|length");
+        echo "$(System.PullRequest.PullRequestId)"
+        echo $(System.PullRequest.PullRequestId)
+        env | sort
         if [[ $is_assigned == 0 ]]; then exit 1; else exit 0; fi
       displayName: 'Check PR is assigned'
 # - stage: builds
