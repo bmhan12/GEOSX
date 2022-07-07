@@ -105,9 +105,9 @@ stages:
     - script: scripts/test_submodule_updated.sh
       displayName: 'Run test_submodule_updated.sh'
 - stage: builds
+  condition: succeededOrFailed()
   jobs:
   - job: build_and_test
-    condition: always()
     # Use maximum time limit
     timeoutInMinutes: 0
     strategy:
