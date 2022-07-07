@@ -107,10 +107,9 @@ stages:
   - job: check_pr_is_assigned
     steps:
     - script: |
-        is_assigned=$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/bmhan12/GEOSX/pulls/$(System.PullRequest.PullRequestNumber) | jq ".assignees|length");
-        echo "$(System.PullRequest.PullRequestId)"
-        echo $(System.PullRequest.PullRequestId)
-        env | sort
+        is_assigned=$(curl -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/$(Build.Repository.Name)/pulls/$(System.PullRequest.PullRequestNumber) | \
+        jq ".assignees|length");
         if [[ $is_assigned == 0 ]]; then exit 1; else exit 0; fi
       displayName: 'Check PR is assigned'
 # - stage: builds
