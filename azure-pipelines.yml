@@ -107,7 +107,7 @@ stages:
 - stage: builds
   jobs:
   - job: build_and_test
-    condition: succeededOrFailed()
+    condition: always()
     # Use maximum time limit
     timeoutInMinutes: 0
     strategy:
