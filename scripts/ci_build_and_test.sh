@@ -16,6 +16,7 @@ GEOSX_TPL_DIR=$(docker run --rm ${DOCKER_REPOSITORY}:${GEOSX_TPL_TAG} /bin/bash 
 GEOSX_DIR=${GEOSX_TPL_DIR}/../GEOSX-INSTALL
 # We need to know where the code folder is mounted inside the container so we can run the script at the proper location!
 # Since this information is repeated twice, we use a variable.
+BUILD_DIR=${TRAVIS_BUILD_DIR:-$BUILD_SOURCESDIRECTORY}
 BUILD_DIR_MOUNT_POINT=/tmp/GEOSX
 # We need to keep track of the building container (hence the `CONTAINER_NAME`)
 # so we can extract the data from it later (if needed). Another solution would have been to use a mount point,
@@ -25,7 +26,7 @@ CONTAINER_NAME=geosx_build
 while sleep 5m; do echo "... still building ..."; done & 
 docker run \
 --name=${CONTAINER_NAME} \
---volume=${BUILD_SOURCESDIRECTORY}:${BUILD_DIR_MOUNT_POINT} \
+--volume=${BUILD_DIR}:${BUILD_DIR_MOUNT_POINT} \
 --cap-add=ALL \
 -e HOST_CONFIG=${HOST_CONFIG:-host-configs/environment.cmake} \
 -e CMAKE_BUILD_TYPE \
