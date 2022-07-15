@@ -111,32 +111,32 @@ stages:
     - checkout: self
       clean: true
       submodules: false
-    - script:
-      - TPL_METADATA_URL=https://www.googleapis.com/storage/v1/b/geosx/o/TPL%2Fosx-${GEOSX_TPL_TAG}.tar
-      - TPL_BULK_URL=${TPL_METADATA_URL}?alt=media
-        # Extracting the GEOSX_TPL installation directory
-      - METADATA=$(curl -s "${TPL_METADATA_URL}")
-      - GEOSX_TPL_DIR=$(echo -n ${METADATA} | python3 -c "import sys, json; print(json.load(sys.stdin)['metadata']['GEOSX_TPL_DIR'], end='')")
-      - sudo mkdir -p -m a=rwx ${GEOSX_TPL_DIR}
-        # Then download the TPLs and uncompress where needed
-      - curl -s "${TPL_BULK_URL}" | tar --strip-component=1 --directory=${GEOSX_TPL_DIR} -xf -
-        # Now let's deal with Homebrew third parties
-      - BREW_HASH=$(echo -n ${METADATA} | python3 -c "import sys, json; print(json.load(sys.stdin)['metadata']['BREW_HASH'], end='')")
-      - BREW_URL=https://raw.github.com/Homebrew/homebrew-core/${BREW_HASH}
-      - wget ${BREW_URL}/Formula/open-mpi.rb
-      - brew update
-      - HOMEBREW_NO_AUTO_UPDATE=1 brew install ./open-mpi.rb
-      - for dep in `brew deps open-mpi.rb`; do brew install $dep; done
-      - git submodule update --init --recursive src/cmake/blt
-      - git submodule update --init --recursive src/coreComponents/LvArray
-      - git submodule update --init --recursive src/coreComponents/constitutive/PVTPackage
-      - git submodule update --init src/coreComponents/mesh/PAMELA
-      - git submodule update --init --recursive src/coreComponents/fileIO/coupling/hdf5_interface
-      - python ${BUILD_SOURCESDIRECTORY}/scripts/config-build.py
-        -hc ${BUILD_SOURCESDIRECTORY}/host-configs/darwin-clang.cmake
+      # Extracting the GEOSX_TPL installation directory,
+      # then downloads the TPLs and uncompress where needed,
+      # and then deals with Homebrew third parties
+    - script: |
+        TPL_METADATA_URL=https://www.googleapis.com/storage/v1/b/geosx/o/TPL%2Fosx-${GEOSX_TPL_TAG}.tar
+        TPL_BULK_URL=${TPL_METADATA_URL}?alt=media
+        METADATA=$(curl -s "${TPL_METADATA_URL}")
+        GEOSX_TPL_DIR=$(echo -n ${METADATA} | python3 -c "import sys, json; print(json.load(sys.stdin)['metadata']['GEOSX_TPL_DIR'], end='')")
+        sudo mkdir -p -m a=rwx ${GEOSX_TPL_DIR}
+        curl -s "${TPL_BULK_URL}" | tar --strip-component=1 --directory=${GEOSX_TPL_DIR} -xf -
+        BREW_HASH=$(echo -n ${METADATA} | python3 -c "import sys, json; print(json.load(sys.stdin)['metadata']['BREW_HASH'], end='')")
+        BREW_URL=https://raw.github.com/Homebrew/homebrew-core/${BREW_HASH}
+        wget ${BREW_URL}/Formula/open-mpi.rb
+        brew update
+        HOMEBREW_NO_AUTO_UPDATE=1 brew install ./open-mpi.rb
+        for dep in `brew deps open-mpi.rb`; do brew install $dep; done
+        git submodule update --init --recursive src/cmake/blt
+        git submodule update --init --recursive src/coreComponents/LvArray
+        git submodule update --init --recursive src/coreComponents/constitutive/PVTPackage
+        git submodule update --init src/coreComponents/mesh/PAMELA
+        git submodule update --init --recursive src/coreComponents/fileIO/coupling/hdf5_interface
+        python ${BUILD_SOURCESDIRECTORY}/scripts/config-build.py \
+        -hc ${BUILD_SOURCESDIRECTORY}/host-configs/darwin-clang.cmake \
         -DBLT_MPI_COMMAND_APPEND:STRING="--oversubscribe" -DENABLE_VTK:BOOL=OFF
-      - cd build-darwin-clang-debug
-      - make -j $(nproc) VERBOSE=1
+        cd build-darwin-clang-debug
+        make -j $(nproc) VERBOSE=1
       # - ctest -V -E "testUncrustifyCheck|testDoxygenCheck|blt_mpi_smoke"
       displayName: 'Mac_OSX'
 
