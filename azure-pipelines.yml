@@ -106,7 +106,7 @@ stages:
   - job: build_and_test_osx
     timeoutInMinutes: 0
     pool:
-      vmImage: 'macOS-10.15'
+      vmImage: 'macOS-12'
     steps:
     - checkout: self
       clean: true
