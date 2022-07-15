@@ -12,38 +12,6 @@ git:
 
 services: docker
 
-geosx_osx_build: &geosx_osx_build
-  os: osx
-  osx_image: xcode12.5
-  install:
-  - TPL_METADATA_URL=https://www.googleapis.com/storage/v1/b/geosx/o/TPL%2Fosx-${GEOSX_TPL_TAG}.tar
-  - TPL_BULK_URL=${TPL_METADATA_URL}?alt=media
-    # Extracting the GEOSX_TPL installation directory
-  - METADATA=$(curl -s "${TPL_METADATA_URL}")
-  - GEOSX_TPL_DIR=$(echo -n ${METADATA} | python3 -c "import sys, json; print(json.load(sys.stdin)['metadata']['GEOSX_TPL_DIR'], end='')")
-  - sudo mkdir -p -m a=rwx ${GEOSX_TPL_DIR}
-    # Then download the TPLs and uncompress where needed
-  - curl -s "${TPL_BULK_URL}" | tar --strip-component=1 --directory=${GEOSX_TPL_DIR} -xf -
-    # Now let's deal with Homebrew third parties
-  - BREW_HASH=$(echo -n ${METADATA} | python3 -c "import sys, json; print(json.load(sys.stdin)['metadata']['BREW_HASH'], end='')")
-  - BREW_URL=https://raw.github.com/Homebrew/homebrew-core/${BREW_HASH}
-  - wget ${BREW_URL}/Formula/open-mpi.rb
-  - brew update
-  - HOMEBREW_NO_AUTO_UPDATE=1 brew install ./open-mpi.rb
-  - for dep in `brew deps open-mpi.rb`; do brew install $dep; done
-  script:
-  - git submodule update --init --recursive src/cmake/blt
-  - git submodule update --init --recursive src/coreComponents/LvArray
-  - git submodule update --init --recursive src/coreComponents/constitutive/PVTPackage
-  - git submodule update --init src/coreComponents/mesh/PAMELA
-  - git submodule update --init --recursive src/coreComponents/fileIO/coupling/hdf5_interface
-  - python ${TRAVIS_BUILD_DIR}/scripts/config-build.py
-    -hc ${TRAVIS_BUILD_DIR}/host-configs/darwin-clang.cmake
-    -DBLT_MPI_COMMAND_APPEND:STRING="--oversubscribe" -DENABLE_VTK:BOOL=OFF
-  - cd build-darwin-clang-debug
-  - make -j $(nproc) VERBOSE=1
-  # - ctest -V -E "testUncrustifyCheck|testDoxygenCheck|blt_mpi_smoke"
-
 geosx_totalenergies_cluster_build: &geosx_totalenergies_cluster_build
   script: scripts/ci_build_and_test.sh
   # We use the most recent ubuntu distribution available in travis-ci to ensure maximum support of google cloud's sdk.
@@ -92,18 +60,6 @@ draft_script: &draft_script
       exit 0
     fi
 
-# PR must be assigned to be merged.
-# This script will fail if this is not the case.
-assigned_script: &assigned_script
-  script:
-  # TRAVIS_PULL_REQUEST is false if job is not from a PR
-  - if [[ $TRAVIS_PULL_REQUEST == false ]]; then exit 0; fi;
-  - |
-    is_assigned=$(curl -H "Accept: application/vnd.github.v3+json" \
-        https://api.github.com/repos/$TRAVIS_REPO_SLUG/pulls/$TRAVIS_PULL_REQUEST | \
-        jq ".assignees|length")
-  - if [[ $is_assigned == 0 ]]; then exit 1; else exit 0; fi
-
 return_script: &return_script
   script:
   # Verifies if all the "checks" jobs passed
@@ -118,35 +74,10 @@ stages:
 - return_status
 
 jobs:
-  allow_failures:
-  - name: code_style
-  - name: documentation
-  - name: check_submodules
-  - name: check_pr_is_assigned
   include:
   - stage: checks
     name: check_pr_is_not_a_draft
     <<: *draft_script
-  - stage: checks
-    name: code_style
-    script: scripts/ci_build_and_test.sh
-    env:
-    - DOCKER_REPOSITORY=geosx/ubuntu20.04-gcc9
-    - CMAKE_BUILD_TYPE=Release
-    - BUILD_AND_TEST_ARGS=--test-code-style
-  - stage: checks
-    name: documentation
-    script: scripts/ci_build_and_test.sh
-    env:
-    - DOCKER_REPOSITORY=geosx/ubuntu20.04-gcc9
-    - CMAKE_BUILD_TYPE=Release
-    - BUILD_AND_TEST_ARGS=--test-documentation
-  - stage: checks
-    name: check_submodules
-    script: scripts/test_submodule_updated.sh
-  - stage: checks
-    name: check_pr_is_assigned
-    <<: *assigned_script
   - stage: builds
     name: Pecan GPU (centos 7.7, gcc 8.2.0, open-mpi 4.0.1, mkl 2019.5, cuda 10.2.89p2)
     <<: *geosx_totalenergies_cluster_build
@@ -173,8 +104,5 @@ jobs:
     - GCP_BUCKET=geosx/Pangea2
     - ENABLE_HYPRE=ON
     - ENABLE_TRILINOS=OFF
-  - stage: builds
-    name: Mac_OSX
-    <<: *geosx_osx_build
   - stage: return_status
     <<: *return_script
