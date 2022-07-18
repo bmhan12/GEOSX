@@ -136,7 +136,7 @@ stages:
         -hc ${BUILD_SOURCESDIRECTORY}/host-configs/darwin-clang.cmake \
         -DBLT_MPI_COMMAND_APPEND:STRING="--oversubscribe" -DENABLE_VTK:BOOL=OFF
         cd build-darwin-clang-debug
-        make -j $(nproc) VERBOSE=1
+        make VERBOSE=1
       # - ctest -V -E "testUncrustifyCheck|testDoxygenCheck|blt_mpi_smoke"
       displayName: 'Mac_OSX'
 
