@@ -2,12 +2,12 @@ variables:
   GEOSX_TPL_TAG: 188-750
 
 # only build non-draft, merge target PR's to develop
-trigger: none
-pr:
-  branches:
-    include:
-    - develop
-  drafts: false
+#trigger: none
+#pr:
+#  branches:
+#    include:
+ #   - develop
+ # drafts: false
 
 stages:
 - stage: checks
