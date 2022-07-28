@@ -2,12 +2,12 @@ variables:
   GEOSX_TPL_TAG: 191-760
 
 # only build non-draft, merge target PR's to develop
-trigger: none
-pr:
-  branches:
-    include:
-    - develop
-  drafts: false
+# trigger: none
+# pr:
+#   branches:
+#     include:
+#     - develop
+#   drafts: false
 
 stages:
 - stage: checks
@@ -79,21 +79,21 @@ stages:
           CMAKE_BUILD_TYPE: 'Release'
           BUILD_AND_TEST_ARGS: "--disable-unit-tests"
           VM_ImageName: 'ubuntu-latest'
-        centos7_7_clang9_openmpi1_10_release:
-          JOB_NAME: 'Centos (7.7, clang 9.0.0 + gcc 4.9.3, open-mpi 1.10.7)'
-          DOCKER_REPOSITORY: 'geosx/centos7.7.1908-clang9.0.0'
-          CMAKE_BUILD_TYPE: 'Release'
-          VM_ImageName: 'ubuntu-latest'
-        ubuntu20_gcc9_openmpi4_release:
-          JOB_NAME: 'Ubuntu (20.04, gcc 9.3.0, open-mpi 4.0.3)'
-          DOCKER_REPOSITORY: 'geosx/ubuntu20.04-gcc9'
-          CMAKE_BUILD_TYPE: 'Release'
-          VM_ImageName: 'ubuntu-latest'
-        ubuntu20_gcc10_openmpi4_release:
-          JOB_NAME: 'Ubuntu (20.04, gcc 10.3.0, open-mpi 4.0.3)'
-          DOCKER_REPOSITORY: 'geosx/ubuntu20.04-gcc10'
-          CMAKE_BUILD_TYPE: 'Release'
-          VM_ImageName: 'ubuntu-latest'
+        # centos7_7_clang9_openmpi1_10_release:
+        #   JOB_NAME: 'Centos (7.7, clang 9.0.0 + gcc 4.9.3, open-mpi 1.10.7)'
+        #   DOCKER_REPOSITORY: 'geosx/centos7.7.1908-clang9.0.0'
+        #   CMAKE_BUILD_TYPE: 'Release'
+        #   VM_ImageName: 'ubuntu-latest'
+        # ubuntu20_gcc9_openmpi4_release:
+        #   JOB_NAME: 'Ubuntu (20.04, gcc 9.3.0, open-mpi 4.0.3)'
+        #   DOCKER_REPOSITORY: 'geosx/ubuntu20.04-gcc9'
+        #   CMAKE_BUILD_TYPE: 'Release'
+        #   VM_ImageName: 'ubuntu-latest'
+        # ubuntu20_gcc10_openmpi4_release:
+        #   JOB_NAME: 'Ubuntu (20.04, gcc 10.3.0, open-mpi 4.0.3)'
+        #   DOCKER_REPOSITORY: 'geosx/ubuntu20.04-gcc10'
+        #   CMAKE_BUILD_TYPE: 'Release'
+        #   VM_ImageName: 'ubuntu-latest'
 
     pool:
       vmImage: $(VM_ImageName)
