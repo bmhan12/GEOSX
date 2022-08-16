@@ -68,6 +68,8 @@ fi
 
 # "Make" target check (builds geosx executable target only if true)
 if [[ "$*" == *--build-exe-only* ]]; then
+  or_die make -j $(nproc) mesh
+  or_die make -j 1 constitutive
   or_die make -j $(nproc) geosx VERBOSE=1
 else
   or_die make -j $(nproc) VERBOSE=1
