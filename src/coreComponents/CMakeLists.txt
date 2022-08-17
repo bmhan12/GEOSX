@@ -105,7 +105,6 @@ if( GEOSX_BUILD_OBJ_LIBS OR GEOSX_BUILD_SHARED_LIBS )
   install( TARGETS geosx_core LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib )
 
   target_include_directories( geosx_core PUBLIC ${CMAKE_SOURCE_DIR}/coreComponents )
-
 endif()
 
 geosx_add_code_checks( PREFIX coreComponents
