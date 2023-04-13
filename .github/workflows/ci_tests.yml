@@ -14,7 +14,7 @@ jobs:
       with:
         submodules: false
     - name: run-test-submodule-updated-sh
-      run: "false"
+      run: "scripts/test_submodule_updated.sh"
   # code_style:
   #   runs-on: ubuntu-latest
   #   env:
@@ -29,9 +29,9 @@ jobs:
         submodules: false
     - name: my-step
       run: echo "Hello World!"
-  check-that-non-blocking-failure-jobs-succeeded:
-    runs-on: ubuntu-latest
-    needs: [ check-submodules, build ]
-    steps:
-    - name: Success
-      run: "true"
+  # check-that-non-blocking-failure-jobs-succeeded:
+  #   runs-on: ubuntu-latest
+  #   needs: [ check-submodules, build ]
+  #   steps:
+  #   - name: Success
+  #     run: "true"
