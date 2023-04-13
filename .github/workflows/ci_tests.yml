@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Success
-      run: "True"
+      run: echo '${{ toJSON(github.event.pull_request.assigned) }}'
   check-submodules:
     if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
