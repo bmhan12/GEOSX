@@ -5,6 +5,7 @@ env:
   GEOSX_TPL_TAG: 203-915
 
 jobs:
+  if: '! github.event.pull_request.draft'
   check-submodules:
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -20,7 +21,6 @@ jobs:
   #   env:
   #   steps:
   build:
-    #if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
