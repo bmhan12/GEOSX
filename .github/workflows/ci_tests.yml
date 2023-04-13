@@ -1,8 +1,25 @@
 name: hello-world
 on: push
+
+env:
+  GEOSX_TPL_TAG: 203-915
+
 jobs:
-  my-job:
+  check_submodules:
+    steps:
+    - name: run-test-submodule-updated-sh
+      run: scripts/test_submodule_updated.sh
+  # code_style:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #   steps:
+  build:
+    #if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
     steps:
-      - name: my-step
-        run: echo "Hello World!"
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: false
+    - name: my-step
+      run: echo "Hello World!"
