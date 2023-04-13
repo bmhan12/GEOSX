@@ -13,7 +13,7 @@ jobs:
       with:
         submodules: false
     - name: run-test-submodule-updated-sh
-      run: scripts/test_submodule_updated.sh
+      run: "false"
   # code_style:
   #   runs-on: ubuntu-latest
   #   env:
