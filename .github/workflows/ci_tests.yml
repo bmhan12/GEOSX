@@ -5,7 +5,7 @@ env:
   GEOSX_TPL_TAG: 203-915
 
 jobs:
-  check_submodules:
+  check-submodules:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -28,3 +28,8 @@ jobs:
         submodules: false
     - name: my-step
       run: echo "Hello World!"
+  check-that-non-blocking-failure-jobs-succeeded:
+    needs: [ check_submodules, build ]
+    steps:
+    - name: Success
+      run: "true"
