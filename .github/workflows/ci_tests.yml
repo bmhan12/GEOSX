@@ -12,6 +12,12 @@ env:
   GEOSX_TPL_TAG: 203-915
 
 jobs:
+  check-that-pull-request-is-assigned:
+    if: 'github.event.pull_request.assigned'
+    continue-on-error: true
+    steps:
+    - name: Success
+      run: "True"
   check-submodules:
     if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
