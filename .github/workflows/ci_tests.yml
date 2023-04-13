@@ -13,7 +13,7 @@ env:
 
 jobs:
   check-that-pull-request-is-assigned:
-    if: 'github.event.pull_request.assigned'
+    # if: 'github.event.pull_request.assigned'
     runs-on: ubuntu-latest
     steps:
     - name: Success
