@@ -1,12 +1,19 @@
 name: hello-world
 on: push
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - edited
+  #     - reopened
+  #     - synchronize
+  #     - ready_for_review
 
 env:
   GEOSX_TPL_TAG: 203-915
 
 jobs:
-  if: '! github.event.pull_request.draft'
   check-submodules:
+    if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -21,6 +28,7 @@ jobs:
   #   env:
   #   steps:
   build:
+    if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
