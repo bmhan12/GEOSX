@@ -22,7 +22,8 @@ jobs:
       with:
         submodules: false
     - name: run-test-submodule-updated-sh
-      run: "scripts/test_submodule_updated.sh"
+      # run: "scripts/test_submodule_updated.sh"
+      run: "false"
   # code_style:
   #   runs-on: ubuntu-latest
   #   env:
@@ -30,6 +31,7 @@ jobs:
   build:
     if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
+    needs: [ check-submodules ]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
