@@ -8,6 +8,10 @@ jobs:
   check_submodules:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: false
     - name: run-test-submodule-updated-sh
       run: scripts/test_submodule_updated.sh
   # code_style:
