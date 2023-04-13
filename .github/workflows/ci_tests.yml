@@ -6,6 +6,7 @@ env:
 
 jobs:
   check_submodules:
+    runs-on: ubuntu-latest
     steps:
     - name: run-test-submodule-updated-sh
       run: scripts/test_submodule_updated.sh
