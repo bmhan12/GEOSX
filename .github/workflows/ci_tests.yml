@@ -34,8 +34,8 @@ jobs:
 # if [[ ${{ toJSON(github.event.pull_request.assigned) }} == null ]]; then echo 'Passed!'; else echo 'Failed!'; fi
       run: |
         echo "Is PR Assigned?"
-        echo ${{ toJSON(github.event.pull_request.assigned) }}
-        if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
+        echo ${{ github.event.pull_request.assigned }}
+        if [[ ${{ github.event.pull_request.assigned }} == true ]]; then "true" ; else "false"; fi
   check-submodules:
     # if: '! github.event.pull_request.draft'
     needs: [check_pull_request_is_not_a_draft]
@@ -62,11 +62,12 @@ jobs:
         submodules: false
     - name: my-step
       run: echo "Hello World!"
-  check-that-non-blocking-failure-jobs-succeeded:
+  check-all-jobs-succeeded:
     runs-on: ubuntu-latest
     needs: [ check-pull-request-is-assigned, check-submodules, build ]
     steps:
-    - name: Checking if all the non blocking failures jobs (i.e. fail-at-end jobs) have succeeded...
+    # - name: Checking if all the non blocking failures jobs (i.e. fail-at-end jobs) have succeeded...
+    - name: Checking if all other jobs have succeeded...
       # run: if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
       run: |
         echo "Have all other jobs passed?"
