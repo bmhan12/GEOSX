@@ -106,7 +106,16 @@ jobs:
       run: |
         echo "Have all other jobs passed?"
         echo ${{ contains(join(needs.*.result, ','), 'failure') }}
+        echo 11111111
         echo '${{ toJSON(needs) }}'
+        echo 2222222
+        echo ${{ contains(join(needs.*.result, ',')) }}
+        echo 3333333
+        echo ${{ toJSON(join(needs.*.result, ',')) }}
+        echo 444444
+        echo ${{ toJSON(contains(join(needs.*.result, ',')) }}
+        echo 55555
+        echo ${{ toJSON(contains(join(needs.*.result, ','), 'failure')) }}
         if [[ ${{ contains(join(needs.*.result, ','), 'failure') }} == true ]]; then "true" ; else "false"; fi
   dump_contexts_to_log:
     runs-on: ubuntu-latest
