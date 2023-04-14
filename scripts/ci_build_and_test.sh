@@ -19,7 +19,7 @@ BUILD_DIR=${TRAVIS_BUILD_DIR:-$BUILD_SOURCESDIRECTORY}
 # We need to know where the code folder is mounted inside the container so we can run the script at the proper location!
 # Since this information is repeated twice, we use a variable.
 # /home/runner/work/GEOSX/GEOSX/src/coreComponents/LvArray
-BUILD_DIR_MOUNT_POINT=/home/runner/work/GEOSX
+BUILD_DIR_MOUNT_POINT=/home/runner/work/GEOSX/GEOSX
 # BUILD_DIR_MOUNT_POINT=/tmp/GEOSX
 
 
