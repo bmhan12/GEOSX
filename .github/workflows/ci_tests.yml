@@ -34,9 +34,9 @@ jobs:
 # This works!
 # if [[ ${{ toJSON(github.event.pull_request.assigned) }} == null ]]; then echo 'Passed!'; else echo 'Failed!'; fi
       run: |
-        echo "Is PR Assigned?"
-        echo ${{ toJSON(github.event.pull_request.assigned) }}
-        if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
+        echo "Is PR Assigned? (Check for Assignee ID)"
+        echo ${{ toJSON(github.event.pull_request.assignee.id) }}
+        if [[ ${{ toJSON(github.event.pull_request.assignee.id) }} != null ]]; then "true" ; else "false"; fi
   check-submodules:
     # if: '! github.event.pull_request.draft'
     needs: [check_pull_request_is_not_a_draft]
