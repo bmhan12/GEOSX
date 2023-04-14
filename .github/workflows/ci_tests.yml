@@ -15,9 +15,9 @@ jobs:
   check_pull_request_is_not_a_draft:
     runs-on: ubuntu-latest
     steps:
-    - name: run check
+    - name: Check that the PR is not a draft (cancel rest of jobs otherwise)
       run: |
-        echo "Check that the PR is not a draft (cancel job otherwise):"
+        echo "Is PR a draft?"
         echo ${{ toJSON(github.event.pull_request.draft) }}
         if [[ ${{ toJSON(github.event.pull_request.draft) }} == true ]]; then "false" ; else "true"; fi
 
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-    - name: run-check
+    - name: Check that the PR is assigned
       # run: echo '${{ toJSON(github.event.pull_request.assigned) }}'
 
 # This works!
@@ -41,11 +41,11 @@ jobs:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: Checkout Repository
       uses: actions/checkout@v3
       with:
         submodules: false
-    - name: run-test-submodule-updated-sh
+    - name: Check that submodules are up to date
       run: "scripts/test_submodule_updated.sh"
   # code_style:
   #   runs-on: ubuntu-latest
@@ -56,7 +56,7 @@ jobs:
     # if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: Checkout Repository
       uses: actions/checkout@v3
       with:
         submodules: false
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ check-pull-request-is-assigned, check-submodules, build ]
     steps:
-    - name: run-check
+    - name: Checking if all the non blocking failures jobs (i.e. fail-at-end jobs) have succeeded...
       # run: if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
       run: |
         echo "Have all other jobs passed?"
