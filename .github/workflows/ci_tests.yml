@@ -15,12 +15,17 @@ jobs:
   check-that-pull-request-is-assigned:
     # if: 'github.event.pull_request.assigned'
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
     - name: Success
       # run: echo '${{ toJSON(github.event.pull_request.assigned) }}'
+
+# This works!
+# if [[ ${{ toJSON(github.event.pull_request.assigned) }} == null ]]; then echo 'Passed!'; else echo 'Failed!'; fi
       run: |
+        echo "Is PR Assigned?"
         echo ${{ toJSON(github.event.pull_request.assigned) }}
-        if [[ ${{ toJSON(github.event.pull_request.assigned) }} == null ]]; then echo 'Passed!'; else echo 'Failed!'; fi
+        if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
   check-submodules:
     if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
