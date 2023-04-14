@@ -52,6 +52,27 @@ jobs:
   #   runs-on: ubuntu-latest
   #   env:
   #   steps:
+
+  code_style:
+    needs: [check_pull_request_is_not_a_draft]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        submodules: false
+    - name: Check style
+      env:
+        DOCKER_REPOSITORY: geosx/ubuntu20.04-gcc9
+        CMAKE_BUILD_TYPE: Release
+        BUILD_AND_TEST_ARGS: --test-code-style
+      run: ./scripts/ci_build_and_test.sh
+    # <<: *__geosx_linux_build
+    # env:
+    # - DOCKER_REPOSITORY=geosx/ubuntu20.04-gcc9
+    # - CMAKE_BUILD_TYPE=Release
+    # - BUILD_AND_TEST_ARGS=--test-code-style
+
   build:
     needs: [check_pull_request_is_not_a_draft]
     # if: '! github.event.pull_request.draft'
