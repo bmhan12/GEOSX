@@ -106,6 +106,7 @@ jobs:
       run: |
         echo "Have all other jobs passed?"
         echo ${{ contains(join(needs.*.result, ','), 'failure') }}
+        echo ${{ toJSON(needs) }}
         if [[ ${{ contains(join(needs.*.result, ','), 'failure') }} == true ]]; then "true" ; else "false"; fi
   dump_contexts_to_log:
     runs-on: ubuntu-latest
