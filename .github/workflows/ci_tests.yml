@@ -58,8 +58,8 @@ jobs:
       # run: if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
       run: |
         echo "Have all other jobs passed?"
-        echo ${{ contains(join(needs.*.result, ','), 'failure')
-        if [[ ${{ contains(join(needs.*.result, ','), 'failure')  == true ]]; then "false" ; else "true"; fi}}
+        echo ${{ contains(join(needs.*.result, ','), 'failure') }}
+        if [[ ${{ contains(join(needs.*.result, ','), 'failure') }} == true ]]; then "false" ; else "true"; fi
   dump_contexts_to_log:
     runs-on: ubuntu-latest
     steps:
