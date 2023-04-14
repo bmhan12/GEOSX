@@ -12,8 +12,18 @@ env:
   GEOSX_TPL_TAG: 203-915
 
 jobs:
+  check_that_pull_request_is_not_a_draft:
+    runs-on: ubuntu-latest
+    steps:
+    - name: run-check
+      run: |
+        echo "Check that the PR is not a draft (cancel job otherwise):"
+        echo ${{ toJSON(github.event.pull_request.draft) }}
+        if [[ ${{ toJSON(github.event.pull_request.draft) }} == true ]]; then "false" ; else "true"; fi
+
   check-that-pull-request-is-assigned:
     # if: 'github.event.pull_request.assigned'
+    needs: [check_that_pull_request_is_not_a_draft]
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -27,7 +37,8 @@ jobs:
         echo ${{ toJSON(github.event.pull_request.assigned) }}
         if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
   check-submodules:
-    if: '! github.event.pull_request.draft'
+    # if: '! github.event.pull_request.draft'
+    needs: [check_that_pull_request_is_not_a_draft]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -41,7 +52,8 @@ jobs:
   #   env:
   #   steps:
   build:
-    if: '! github.event.pull_request.draft'
+    needs: [check_that_pull_request_is_not_a_draft]
+    # if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -76,3 +88,6 @@ jobs:
         run: echo '${{ toJSON(strategy) }}'
       - name: Dump matrix context
         run: echo '${{ toJSON(matrix) }}'
+
+
+# run: "true"
