@@ -40,6 +40,6 @@ docker run \
 -e ENABLE_HYPRE_CUDA=${ENABLE_HYPRE_CUDA:-OFF} \
 -e ENABLE_TRILINOS=${ENABLE_TRILINOS:-ON} \
 ${DOCKER_REPOSITORY}:${GEOSX_TPL_TAG} \
-echo dog;
+ls;
 # ${BUILD_DIR_MOUNT_POINT}/scripts/travis_build_and_test.sh ${BUILD_AND_TEST_ARGS};
 
