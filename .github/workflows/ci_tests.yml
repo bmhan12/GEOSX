@@ -52,11 +52,14 @@ jobs:
       run: echo "Hello World!"
   check-that-non-blocking-failure-jobs-succeeded:
     runs-on: ubuntu-latest
-    needs: [ check-that-pull-request-is-assigned, build ]
+    needs: [ check-that-pull-request-is-assigned, check-submodules, build ]
     steps:
     - name: run-check
-      run: if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
-
+      # run: if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
+      run: |
+        echo "Have all other jobs passed?"
+        echo ${{ contains(join(needs.*.result, ','), 'failure')
+        if [[ ${{ contains(join(needs.*.result, ','), 'failure')  == true ]]; then "false" ; else "true"; fi}}
   dump_contexts_to_log:
     runs-on: ubuntu-latest
     steps:
