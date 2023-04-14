@@ -103,17 +103,17 @@ jobs:
     # - name: Checking if all the non blocking failures jobs (i.e. fail-at-end jobs) have succeeded...
     - name: Checking if all other jobs have succeeded...
       # run: if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
-        #       echo 3333333
-        # echo '${{ toJSON(join(needs.*.result, ',')) }}'
         # echo 444444
         # echo '${{ toJSON(contains(join(needs.*.result, ','), 'failure')) }}'
-        #         echo 2222222
-        # echo '${{ contains(join(needs.*.result, ',')) }}'
       run: |
         echo "Have all other jobs passed?"
         echo ${{ contains(join(needs.*.result, ','), 'failure') }}
         echo 11111111
         echo '${{ toJSON(needs) }}'
+        echo 2222222
+        echo '${{ join(needs.*.result, ',') }}'
+        echo 3333333
+        echo '${{ toJSON(join(needs.*.result, ',')) }}'
         if [[ ${{ contains(join(needs.*.result, ','), 'failure') }} == true ]]; then "true" ; else "false"; fi
   dump_contexts_to_log:
     runs-on: ubuntu-latest
