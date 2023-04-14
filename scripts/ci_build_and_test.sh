@@ -18,7 +18,11 @@ GEOSX_DIR=${GEOSX_TPL_DIR}/../GEOSX-INSTALL
 BUILD_DIR=${TRAVIS_BUILD_DIR:-$BUILD_SOURCESDIRECTORY}
 # We need to know where the code folder is mounted inside the container so we can run the script at the proper location!
 # Since this information is repeated twice, we use a variable.
-BUILD_DIR_MOUNT_POINT=/tmp/GEOSX
+# /home/runner/work/GEOSX/GEOSX/src/coreComponents/LvArray
+BUILD_DIR_MOUNT_POINT=/home/runner/work/GEOSX
+# BUILD_DIR_MOUNT_POINT=/tmp/GEOSX
+
+
 # We need to keep track of the building container (hence the `CONTAINER_NAME`)
 # so we can extract the data from it later (if needed). Another solution would have been to use a mount point,
 # but that would not have solved the problem for the TPLs (we would require extra action to copy them to the mount point).
