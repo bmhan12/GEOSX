@@ -12,18 +12,18 @@ env:
   GEOSX_TPL_TAG: 203-915
 
 jobs:
-  check_that_pull_request_is_not_a_draft:
+  check_pull_request_is_not_a_draft:
     runs-on: ubuntu-latest
     steps:
-    - name: run-check
+    - name: run check
       run: |
         echo "Check that the PR is not a draft (cancel job otherwise):"
         echo ${{ toJSON(github.event.pull_request.draft) }}
         if [[ ${{ toJSON(github.event.pull_request.draft) }} == true ]]; then "false" ; else "true"; fi
 
-  check-that-pull-request-is-assigned:
+  check-pull-request-is-assigned:
     # if: 'github.event.pull_request.assigned'
-    needs: [check_that_pull_request_is_not_a_draft]
+    needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -38,7 +38,7 @@ jobs:
         if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
   check-submodules:
     # if: '! github.event.pull_request.draft'
-    needs: [check_that_pull_request_is_not_a_draft]
+    needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -52,7 +52,7 @@ jobs:
   #   env:
   #   steps:
   build:
-    needs: [check_that_pull_request_is_not_a_draft]
+    needs: [check_pull_request_is_not_a_draft]
     # if: '! github.event.pull_request.draft'
     runs-on: ubuntu-latest
     steps:
@@ -64,7 +64,7 @@ jobs:
       run: echo "Hello World!"
   check-that-non-blocking-failure-jobs-succeeded:
     runs-on: ubuntu-latest
-    needs: [ check-that-pull-request-is-assigned, check-submodules, build ]
+    needs: [ check-pull-request-is-assigned, check-submodules, build ]
     steps:
     - name: run-check
       # run: if [[ ${{ toJSON(github.event.pull_request.assigned) }} == true ]]; then "true" ; else "false"; fi
