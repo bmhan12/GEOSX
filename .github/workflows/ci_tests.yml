@@ -139,9 +139,9 @@ jobs:
       run: printenv
 
     - name: Run build and test script
-      # env:
-      #   docker_repository: ${{ matrix.DOCKER_REPOSITORY }}
-      #   docker_compiler_build_arg: ${{ matrix.DOCKER_COMPILER_BUILD_ARG }}
+      env:
+        DOCKER_REPOSITORY: ${{ matrix.DOCKER_REPOSITORY }}
+        CMAKE_BUILD_TYPE: ${{ matrix.CMAKE_BUILD_TYPE }}
       run: ./scripts/ci_build_and_test.sh
 
     # - name: Run the docker build and push docker script
