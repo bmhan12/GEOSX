@@ -95,7 +95,8 @@ jobs:
       with:
         submodules: false
     - name: my-step
-      run: echo "Hello World!"
+      run: "false"
+      # run: echo "Hello World!"
   check-all-jobs-succeeded:
     runs-on: ubuntu-latest
     needs: [ check-pull-request-is-assigned, check-submodules, code-style, documentation, build ]
