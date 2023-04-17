@@ -114,7 +114,7 @@ jobs:
         echo '${{ join(needs.*.result, ',') }}'
         echo 3333333
         echo '${{ toJSON(join(needs.*.result, ',')) }}'
-        if [[ ${{ contains(join(needs.*.result, ','), 'failure') }} == true ]]; then "true" ; else "false"; fi
+        if [[ ${{ contains(join(needs.*.result, ','), 'failure') }} == true ]]; then "false" ; else "true"; fi
   dump_contexts_to_log:
     runs-on: ubuntu-latest
     steps:
