@@ -47,8 +47,7 @@ jobs:
       with:
         submodules: false
     - name: Check that submodules are up to date
-      # run: "scripts/test_submodule_updated.sh"
-      run: "false"
+      run: "scripts/test_submodule_updated.sh"
 
   code-style:
     needs: [check_pull_request_is_not_a_draft]
