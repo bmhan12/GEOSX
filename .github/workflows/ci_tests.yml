@@ -38,7 +38,6 @@ jobs:
         echo ${{ toJSON(github.event.pull_request.assignee.id) }}
         if [[ ${{ toJSON(github.event.pull_request.assignee.id) }} != null ]]; then "true" ; else "false"; fi
   check-submodules:
-    # if: '! github.event.pull_request.draft'
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-latest
     steps:
