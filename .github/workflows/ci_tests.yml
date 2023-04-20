@@ -34,6 +34,13 @@ jobs:
 # This works!
 # if [[ ${{ toJSON(github.event.pull_request.assigned) }} == null ]]; then echo 'Passed!'; else echo 'Failed!'; fi
       run: |
+        echo "Github repo is "
+        echo $github.repository
+        echo "PR number is "
+        echo $github.event.number
+        echo "Assignee id is "
+        id = $(curl -H "Accept: application/vnd.github+json" https://api.github.com/repos/$github.repository/pulls/$github.event.number | jq '.assignees' | jq '.[].id')
+        echo id
         echo "Is PR Assigned? (Check for Assignee ID)"
         echo ${{ toJSON(github.event.pull_request.assignee.id) }}
         if [[ ${{ toJSON(github.event.pull_request.assignee.id) }} != null ]]; then "true" ; else "false"; fi
