@@ -223,6 +223,7 @@ jobs:
   #       ./scripts/ci_build_and_test.sh
 
   Test gcloud:
+    runs-on: ubuntu-latest
     steps:
     - name: my-step
       run: echo "Hello World!"
