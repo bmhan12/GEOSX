@@ -225,12 +225,19 @@ jobs:
   test-gcloud:
     runs-on: ubuntu-latest
     steps:
-    - name: my-step
-      run: echo "Hello World!"
+    # This is to authenticate with gcloud
+    # - id: 'auth'
+    #   uses: 'google-github-actions/auth@v1'
+    #   with:
+    #     credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    # This sets up gcloud
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v1'
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
+    - name: my-step
+      run: echo "Hello World!"
 
   # Hello world
     # steps:
