@@ -222,7 +222,7 @@ jobs:
   #     run: |
   #       ./scripts/ci_build_and_test.sh
 
-  Test gcloud:
+  test-gcloud:
     runs-on: ubuntu-latest
     steps:
     - name: my-step
