@@ -208,15 +208,15 @@ jobs:
 
     steps:
     - name: Hello
-      if: github.event_name == 'pull_request' || inputs.jobSelection == matrix.name
+      if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.jobSelection == matrix.name)
       env:
         JOB_SELECTION: ${{ inputs.jobSelection }}
       run: |
         echo Hello World
         echo $JOB_SELECTION
         echo end of line
-    - name: Not chosen
-      if: github.event_name == 'pull_request' || inputs.jobSelection != matrix.name
+    - name: Manual Workflow Only - Fail Nonselected Job
+      if: github.event_name == 'workflow_dispatch' && inputs.jobSelection != matrix.name
       run: |
         echo Not the job you are looking for
         "false"
