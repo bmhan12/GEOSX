@@ -36,6 +36,7 @@ jobs:
   check_pull_request_is_not_a_draft:
     # We use the most recent ubuntu distribution available in Github Actions to ensure maximum support of google cloud's sdk.
     runs-on: ubuntu-22.04
+    if: github.event_name == "pull_request"
     steps:
     - name: Check that the PR is not a draft (cancel rest of jobs otherwise)
       run: |
@@ -48,6 +49,7 @@ jobs:
   check_pull_request_is_assigned:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
+    if: github.event_name == "pull_request"
     steps:
     # Assignee ID will be null if PR is not assigned
     - name: Check that the PR is assigned
@@ -62,6 +64,7 @@ jobs:
   check_submodules:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
+    if: github.event_name == "pull_request"
     steps:
     # The integrated test submodule repository contains large data (using git lfs).
     # To save time (and money) we do not let Github Actions automatically clone all our (lfs) subrepositories and do it by hand.
@@ -77,6 +80,7 @@ jobs:
   code_style:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
+    if: github.event_name == "pull_request"
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
@@ -93,6 +97,7 @@ jobs:
   documentation:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
+    if: github.event_name == "pull_request"
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
