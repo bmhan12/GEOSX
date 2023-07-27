@@ -36,9 +36,9 @@ jobs:
   check_pull_request_is_not_a_draft:
     # We use the most recent ubuntu distribution available in Github Actions to ensure maximum support of google cloud's sdk.
     runs-on: ubuntu-22.04
-    if: github.event_name == 'pull_request'
     steps:
     - name: Check that the PR is not a draft (cancel rest of jobs otherwise)
+      if: github.event_name == 'pull_request'
       run: |
         echo "Is PR a draft?"
         echo ${{ toJSON(github.event.pull_request.draft) }}
@@ -49,10 +49,10 @@ jobs:
   check_pull_request_is_assigned:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
-    if: github.event_name == 'pull_request'
     steps:
     # Assignee ID will be null if PR is not assigned
     - name: Check that the PR is assigned
+      if: github.event_name == 'pull_request'
       run: |
         id=$(curl -H "Accept: application/vnd.github+json" \
            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.number }} \
@@ -64,30 +64,32 @@ jobs:
   check_submodules:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
-    if: github.event_name == 'pull_request'
     steps:
     # The integrated test submodule repository contains large data (using git lfs).
     # To save time (and money) we do not let Github Actions automatically clone all our (lfs) subrepositories and do it by hand.
     - name: Checkout Repository
+      if: github.event_name == 'pull_request'
       uses: actions/checkout@v3
       with:
         # Let script update submodules; Github Actions submodule history causes error
         submodules: false
         lfs: false
     - name: Check that submodules are up to date
+      if: github.event_name == 'pull_request'
       run: "scripts/test_submodule_updated.sh"
 
   code_style:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
-    if: github.event_name == 'pull_request'
     steps:
     - name: Checkout Repository
+      if: github.event_name == 'pull_request'
       uses: actions/checkout@v3
       with:
         submodules: true
         lfs: false
     - name: Check style
+      if: github.event_name == 'pull_request'
       env:
         DOCKER_REPOSITORY: geosx/ubuntu20.04-gcc9
         CMAKE_BUILD_TYPE: Release
@@ -97,14 +99,15 @@ jobs:
   documentation:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
-    if: github.event_name == 'pull_request'
     steps:
     - name: Checkout Repository
+      if: github.event_name == 'pull_request'
       uses: actions/checkout@v3
       with:
         submodules: true
         lfs: false
     - name: Check documentation
+      if: github.event_name == 'pull_request'
       env:
         DOCKER_REPOSITORY: geosx/ubuntu20.04-gcc9
         CMAKE_BUILD_TYPE: Release
