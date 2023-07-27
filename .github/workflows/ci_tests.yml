@@ -207,16 +207,79 @@ jobs:
             GCP_BUCKET: geosx/ubuntu22.04-gcc11
 
     steps:
-    - name: Hello
+    - name: Checkout Repository
       if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All'))
-      # env:
-      #   JOB_SELECTION: ${{ inputs.jobSelection }}
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+        lfs: false
+
+    # - id: 'auth'
+    #   if: matrix.GCP_BUCKET && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All')))
+    #   uses: 'google-github-actions/auth@v1'
+    #   with:
+    #     credentials_json: '${{ secrets.GOOGLE_CLOUD_GCP }}'
+    # - name: 'Set up Cloud SDK'
+    #   if: matrix.GCP_BUCKET && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All')))
+    #   uses: 'google-github-actions/setup-gcloud@v1'
+    #   with:
+    #     version: '>= 363.0.0'
+
+    - name: Print environment
+      if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All'))
+      run: printenv
+
+    # Build and test only
+    # Builds only the geosx executable (timeout when building tests)
+    - name: Build and test
+      if: ${{ !(matrix.GCP_BUCKET) }} && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All')))
+      env:
+        DOCKER_REPOSITORY: ${{ matrix.DOCKER_REPOSITORY }}
+        CMAKE_BUILD_TYPE: ${{ matrix.CMAKE_BUILD_TYPE }}
+        BUILD_AND_TEST_ARGS: ${{ matrix.BUILD_AND_TEST_ARGS }}
+        ENABLE_HYPRE: ${{ matrix.ENABLE_HYPRE }}
+        ENABLE_HYPRE_DEVICE: ${{ matrix.ENABLE_HYPRE_DEVICE }}
+        ENABLE_TRILINOS: ${{ matrix.ENABLE_TRILINOS }}
+      run: ./scripts/ci_build_and_test.sh
+
+    # Build, test, uploads GEOSX and its TPL to GCP/GCS using gcloud CLI
+    - name: Build and test and deploy
+      if: matrix.GCP_BUCKET && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All')))
+      env:
+        DOCKER_REPOSITORY: ${{ matrix.DOCKER_REPOSITORY }}
+        CMAKE_BUILD_TYPE: ${{ matrix.CMAKE_BUILD_TYPE }}
+        BUILD_AND_TEST_ARGS: ${{ matrix.BUILD_AND_TEST_ARGS }}
+        HOST_CONFIG: ${{ matrix.HOST_CONFIG }}
+        ENABLE_HYPRE: ${{ matrix.ENABLE_HYPRE }}
+        ENABLE_TRILINOS: ${{ matrix.ENABLE_TRILINOS }}
+        GCP_BUCKET: ${{ matrix.GCP_BUCKET }}
+      # run: |
+      #   source ./scripts/ci_build_and_test.sh
+      #   TMP_DIR=/tmp
+      #   GEOSX_EXPORT_DIR=GEOSX-and-TPL-${GITHUB_SHA:0:7}
+      #   docker cp -a ${CONTAINER_NAME}:${GEOSX_TPL_DIR}/.. ${TMP_DIR}/${GEOSX_EXPORT_DIR}
+      #   GEOSX_BUNDLE=${TMP_DIR}/${GEOSX_EXPORT_DIR}.tar.gz
+      #   tar czf ${GEOSX_BUNDLE} --directory=${TMP_DIR} ${GEOSX_EXPORT_DIR}
+      #   CLOUDSDK_PYTHON=python3 gsutil cp -a public-read ${GEOSX_BUNDLE} gs://${GCP_BUCKET}/
       run: |
-        echo Hello World
-        echo end of line
+        source ./scripts/ci_build_and_test.sh
+
     - name: Manual Workflow Test Run Only - Fail Nonselected Job
       if: github.event_name == 'workflow_dispatch' && inputs.jobSelection != matrix.name && inputs.jobSelection != 'All'
       run: "false"
+
+    # steps:
+    # - name: Hello
+    #   if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All'))
+    #   if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All')))
+    #   # env:
+    #   #   JOB_SELECTION: ${{ inputs.jobSelection }}
+    #   run: |
+    #     echo Hello World
+    #     echo end of line
+    # - name: Manual Workflow Test Run Only - Fail Nonselected Job
+    #   if: github.event_name == 'workflow_dispatch' && inputs.jobSelection != matrix.name && inputs.jobSelection != 'All'
+    #   run: "false"
 
 
   # Convenience job - passes when all other jobs have passed.
