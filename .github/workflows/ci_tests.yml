@@ -232,7 +232,7 @@ jobs:
     # Build and test only
     # Builds only the geosx executable (timeout when building tests)
     - name: Build and test
-      if: ${{ !(matrix.GCP_BUCKET) }} && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All')))
+      if: ${{ !(matrix.GCP_BUCKET) && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All'))) }}
       env:
         DOCKER_REPOSITORY: ${{ matrix.DOCKER_REPOSITORY }}
         CMAKE_BUILD_TYPE: ${{ matrix.CMAKE_BUILD_TYPE }}
