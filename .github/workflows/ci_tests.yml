@@ -209,7 +209,7 @@ jobs:
     steps:
     - name: Hello
       #if: github.event_name == 'pull_request'
-      environment:
+      env:
         JOB_SELECTION: ${{ inputs.jobSelection }}
       run: |
         echo Hello World
