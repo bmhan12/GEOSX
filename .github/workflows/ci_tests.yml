@@ -8,7 +8,7 @@ on:
         default: 'all'
         type: choice
         options:
-        - all
+        - All
         - Ubuntu CUDA debug (20.04, clang 10.0.0 + gcc 9.4.0, open-mpi 4.0.3, cuda-11.2.152)
         - Ubuntu CUDA (20.04, clang 10.0.0 + gcc 9.4.0, open-mpi 4.0.3, cuda-11.2.152)
         - Centos (7.7, gcc 8.3.1, open-mpi 1.10.7, cuda 11.8.0)
@@ -208,18 +208,15 @@ jobs:
 
     steps:
     - name: Hello
-      if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.jobSelection == matrix.name)
-      env:
-        JOB_SELECTION: ${{ inputs.jobSelection }}
+      if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All'))
+      # env:
+      #   JOB_SELECTION: ${{ inputs.jobSelection }}
       run: |
         echo Hello World
-        echo $JOB_SELECTION
         echo end of line
-    - name: Manual Workflow Only - Fail Nonselected Job
-      if: github.event_name == 'workflow_dispatch' && inputs.jobSelection != matrix.name
-      run: |
-        echo Not the job you are looking for
-        "false"
+    - name: Manual Workflow Test Run Only - Fail Nonselected Job
+      if: github.event_name == 'workflow_dispatch' && (inputs.jobSelection != matrix.name || inputs.jobSelection != 'All')
+      run: "false"
 
 
   # Convenience job - passes when all other jobs have passed.
