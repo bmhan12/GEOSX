@@ -208,7 +208,12 @@ jobs:
 
     steps:
     - name: Hello
-      run: echo Hello World
+      #if: github.event_name == 'pull_request'
+      run: |
+        echo Hello World
+        echo inputs.jobSelection
+        echo ${{ inputs.jobSelection }}
+        echo end of line
 
 
   # Convenience job - passes when all other jobs have passed.
