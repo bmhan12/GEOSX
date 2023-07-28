@@ -264,9 +264,9 @@ jobs:
       run: |
         source ./scripts/ci_build_and_test.sh
 
-    - name: Manual Workflow Test Run Only - Fail Nonselected Job
+    - name: Manual Workflow Test Run Only - Success for Nonselected Jobs
       if: github.event_name == 'workflow_dispatch' && inputs.jobSelection != matrix.name && inputs.jobSelection != 'All'
-      run: "false"
+      run: "true"
 
     # steps:
     # - name: Hello
