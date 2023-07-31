@@ -225,7 +225,7 @@ jobs:
     #   with:
     #     version: '>= 363.0.0'
 
-    - name: Print environment
+    - name: Prints environment
       if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.jobSelection == matrix.name || inputs.jobSelection == 'All'))
       run: printenv
 
