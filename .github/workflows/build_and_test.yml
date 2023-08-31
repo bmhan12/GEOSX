@@ -8,6 +8,7 @@ on:
       DOCKER_REPOSITORY:
         required: false
         type: string
+        default: ''
       OS:
         required: false
         type: string
