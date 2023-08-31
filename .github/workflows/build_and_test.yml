@@ -38,7 +38,6 @@ on:
 jobs:
   reusable_workflow_job:
     runs-on: ubuntu-latest
-    environment: production
     steps:
     - name: Test echo everything
       run: |
