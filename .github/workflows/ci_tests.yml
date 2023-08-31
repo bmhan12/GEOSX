@@ -311,6 +311,7 @@ jobs:
       ENABLE_TRILINOS: ${{ matrix.ENABLE_TRILINOS }}
       GCP_BUCKET: ${{ matrix.GCP_BUCKET }}
       COMMIT: ${{ github.event.pull_request.head.sha }}
+      OS: ${{ matrix.OS }}
     secrets: inherit
     # steps:
     # - name: Checkout Repository
