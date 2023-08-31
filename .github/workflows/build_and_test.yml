@@ -1,0 +1,46 @@
+name: Build and Test Configuration
+on:
+  workflow_call:
+    inputs:
+      config-path:
+        required: false
+        type: string
+      DOCKER_REPOSITORY:
+        required: false
+        type: string
+      OS:
+        required: false
+        type: string
+      CMAKE_BUILD_TYPE:
+        required: false
+        type: string
+      BUILD_AND_TEST_ARGS:
+        required: false
+        type: string
+      ENABLE_HYPRE:
+        required: false
+        type: string
+      ENABLE_HYPRE_DEVICE:
+        required: false
+        type: string
+      ENABLE_TRILINOS:
+        required: false
+        type: string
+      GCP_BUCKET:
+        required: false
+        type: string
+      COMMIT:
+        required: false
+        type: string
+    secrets:
+      GOOGLE_CLOUD_GCP:
+        required: false
+jobs:
+  reusable_workflow_job:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: Test echo everything
+      run: |
+        echo ${DOCKER_REPOSITORY} ${OS} ${CMAKE_BUILD_TYPE} ${BUILD_AND_TEST_ARGS}
+        echo ${ENABLE_HYPRE} ${ENABLE_HYPRE_DEVICE} ${ENABLE_TRILINOS} ${GCP_BUCKET} ${COMMIT}

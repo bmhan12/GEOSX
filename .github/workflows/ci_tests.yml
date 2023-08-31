@@ -356,8 +356,20 @@ jobs:
     #     tar czf ${GEOSX_BUNDLE} --directory=${TMP_DIR} ${GEOSX_EXPORT_DIR}
     #     CLOUDSDK_PYTHON=python3 gsutil cp -a public-read ${GEOSX_BUNDLE} gs://${GCP_BUCKET}/
     - name: Test run
-      run: |
-        echo Success
+      # run: |
+      #   echo Success
+        uses: ./.github/workflows/build_and_test.yml
+        with:
+          DOCKER_REPOSITORY: ${{ matrix.DOCKER_REPOSITORY }}
+          CMAKE_BUILD_TYPE: ${{ matrix.CMAKE_BUILD_TYPE }}
+          BUILD_AND_TEST_ARGS: ${{ matrix.BUILD_AND_TEST_ARGS }}
+          HOST_CONFIG: ${{ matrix.HOST_CONFIG }}
+          ENABLE_HYPRE: ${{ matrix.ENABLE_HYPRE }}
+          ENABLE_HYPRE_DEVICE: ${{ matrix.ENABLE_HYPRE_DEVICE }}
+          ENABLE_TRILINOS: ${{ matrix.ENABLE_TRILINOS }}
+          GCP_BUCKET: ${{ matrix.GCP_BUCKET }}
+          COMMIT: ${{ github.event.pull_request.head.sha }}
+        secrets: inherit
 
   # Convenience job - passes when all other jobs have passed.
   check_that_all_jobs_succeeded:
