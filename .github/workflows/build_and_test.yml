@@ -37,7 +37,9 @@ on:
         required: false
 jobs:
   reusable_workflow_job:
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    fail-fast : false
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Test echo everything
       run: |
