@@ -107,5 +107,4 @@ jobs:
     #     CLOUDSDK_PYTHON=python3 gsutil cp -a public-read ${GEOSX_BUNDLE} gs://${GCP_BUCKET}/
 
     - name: Build and test
-      # run: ./scripts/ci_build_and_test.sh
-      run: "false"
+      run: ./scripts/ci_build_and_test.sh
