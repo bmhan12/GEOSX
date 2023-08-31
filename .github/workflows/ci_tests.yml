@@ -257,6 +257,7 @@ jobs:
     name: ${{ matrix.name }}
 #    runs-on: ubuntu-22.04
     # runs-on: ${{ matrix.os }}
+    fail-fast : false
     needs: [linux_builds]
     strategy:
 
