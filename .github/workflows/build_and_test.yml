@@ -41,7 +41,7 @@ on:
 jobs:
   reusable_workflow_job:
     # runs-on: ubuntu-latest
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ OS }}
     steps:
     - name: Test echo everything
       run: |
