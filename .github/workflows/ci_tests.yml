@@ -258,7 +258,7 @@ jobs:
 #    runs-on: ubuntu-22.04
     # runs-on: ${{ matrix.os }}
     needs: [linux_builds, check_read_for_merge_label]
-    if: needs.check_read_for_merge_label.outputs.output1 == "not_ready"
+    if: needs.check_read_for_merge_label.outputs.output1 == 'not_ready'
     strategy:
 
       # In-progress jobs will not be cancelled if there is a failure
