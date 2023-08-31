@@ -46,8 +46,18 @@ jobs:
     steps:
     - name: Test echo everything
       shell: bash
+      env:
+        DOCKER_REPOSITORY: ${{ inputs.DOCKER_REPOSITORY }}
+        CMAKE_BUILD_TYPE: ${{ inputs.CMAKE_BUILD_TYPE }}
+        BUILD_AND_TEST_ARGS: ${{ inputs.BUILD_AND_TEST_ARGS }}
+        ENABLE_HYPRE: ${{ inputs.ENABLE_HYPRE }}
+        ENABLE_HYPRE_DEVICE: ${{ inputs.ENABLE_HYPRE_DEVICE }}
+        ENABLE_TRILINOS: ${{ inputs.ENABLE_TRILINOS }}
+        GCP_BUCKET: ${{ inputs.GCP_BUCKET }}
+        HOST_CONFIG: ${{ inputs.HOST_CONFIG }}
+        COMMIT: ${{ inputs.COMMIT }}
       run: |
-        echo ${inputs.DOCKER_REPOSITORY} ${inputs.OS} ${inputs.CMAKE_BUILD_TYPE}
-        echo ${inputs.BUILD_AND_TEST_ARGS} ${inputs.HOST_CONFIG}
-        echo ${inputs.ENABLE_HYPRE} ${inputs.ENABLE_HYPRE_DEVICE}
-        echo ${inputs.ENABLE_TRILINOS} ${inputs.GCP_BUCKET} ${inputs.COMMIT}
+        echo ${DOCKER_REPOSITORY} ${CMAKE_BUILD_TYPE}
+        echo ${BUILD_AND_TEST_ARGS} ${HOST_CONFIG}
+        echo ${ENABLE_HYPRE} ${ENABLE_HYPRE_DEVICE}
+        echo ${ENABLE_TRILINOS} ${GCP_BUCKET} ${COMMIT}
