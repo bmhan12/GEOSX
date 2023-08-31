@@ -2,6 +2,10 @@ name: Build and Test Configuration
 on:
   workflow_call:
     inputs:
+      GEOSX_TPL_TAG:
+        required: false
+        type: string
+        default: ''
       DOCKER_REPOSITORY:
         required: false
         type: string
@@ -49,6 +53,7 @@ jobs:
       GCP_BUCKET: ${{ inputs.GCP_BUCKET }}
       HOST_CONFIG: ${{ inputs.HOST_CONFIG }}
       COMMIT: ${{ inputs.COMMIT }}
+      GEOSX_TPL_TAG: ${{ inputs.GEOSX_TPL_TAG }}
     steps:
     - name: Test echo everything
       run: |
@@ -62,6 +67,7 @@ jobs:
         echo GCP_BUCKET is ${GCP_BUCKET}
         echo COMMIT is ${COMMIT}
         echo OS is ${OS}
+        echo GEOSX_TPL_TAG is ${GEOSX_TPL_TAG}
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:

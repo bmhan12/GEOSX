@@ -43,23 +43,23 @@ jobs:
   # Check if PR has "flag: read to be merged" label
   # If label found, runs all build jobs at once.
   # Otherwise, CUDA jobs will wait for other jobs to finish first.
-  check_ready_for_merge_label:
-    runs-on: ubuntu-22.04
-    needs: check_pull_request_is_not_a_draft
-    # Map step outputs to a single job output
-    outputs:
-      output1: ${{ format('{0}{1}', steps.step1.outputs.merge_status, steps.step2.outputs.merge_status) }}
-    steps:
-    - name: PR is labeled ready to be merged
-      id: step1
-      if: contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))
-      run: |
-        echo "merge_status=ready" >> "$GITHUB_OUTPUT"
-    - name: PR is not labeled ready to be merged
-      id: step2
-      if: ${{ !(contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))) }}
-      run: |
-        echo "merge_status=not_ready" >> "$GITHUB_OUTPUT"
+  # check_ready_for_merge_label:
+  #   runs-on: ubuntu-22.04
+  #   needs: check_pull_request_is_not_a_draft
+  #   # Map step outputs to a single job output
+  #   outputs:
+  #     output1: ${{ format('{0}{1}', steps.step1.outputs.merge_status, steps.step2.outputs.merge_status) }}
+  #   steps:
+  #   - name: PR is labeled ready to be merged
+  #     id: step1
+  #     if: contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))
+  #     run: |
+  #       echo "merge_status=ready" >> "$GITHUB_OUTPUT"
+  #   - name: PR is not labeled ready to be merged
+  #     id: step2
+  #     if: ${{ !(contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))) }}
+  #     run: |
+  #       echo "merge_status=not_ready" >> "$GITHUB_OUTPUT"
 
   # PR must be assigned to be merged.
   # This job will fail if this is not the case.
@@ -180,6 +180,7 @@ jobs:
             GCP_BUCKET: geosx/ubuntu22.04-gcc11
     uses: ./.github/workflows/build_and_test.yml
     with:
+      GEOSX_TPL_TAG: ${{ GEOSX_TPL_TAG }}
       DOCKER_REPOSITORY: ${{ matrix.DOCKER_REPOSITORY }}
       CMAKE_BUILD_TYPE: ${{ matrix.CMAKE_BUILD_TYPE }}
       BUILD_AND_TEST_ARGS: ${{ matrix.BUILD_AND_TEST_ARGS }}
@@ -196,8 +197,8 @@ jobs:
   # should have identical matrix.include entries.
   cuda_builds_merge_not_ready:
     name: ${{ matrix.name }}
-    needs: [linux_builds, check_ready_for_merge_label]
-    if: needs.check_ready_for_merge_label.outputs.output1 == 'not_ready'
+    needs: [linux_builds]
+    if: ${{ !(contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))) }}
     strategy:
 
       # In-progress jobs will not be cancelled if there is a failure
@@ -242,6 +243,7 @@ jobs:
             GCP_BUCKET: geosx/Pecan-GPU
     uses: ./.github/workflows/build_and_test.yml
     with:
+      GEOSX_TPL_TAG: ${{ GEOSX_TPL_TAG }}
       DOCKER_REPOSITORY: ${{ matrix.DOCKER_REPOSITORY }}
       CMAKE_BUILD_TYPE: ${{ matrix.CMAKE_BUILD_TYPE }}
       BUILD_AND_TEST_ARGS: ${{ matrix.BUILD_AND_TEST_ARGS }}
@@ -258,8 +260,8 @@ jobs:
   # should have identical matrix.include entries.
   cuda_builds_merge_ready:
     name: ${{ matrix.name }}
-    needs: [check_ready_for_merge_label]
-    if: needs.check_ready_for_merge_label.outputs.output1 == 'ready'
+    needs: [check_pull_request_is_not_a_draft]
+    if: contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))
     strategy:
 
       # In-progress jobs will not be cancelled if there is a failure
@@ -304,6 +306,7 @@ jobs:
             GCP_BUCKET: geosx/Pecan-GPU
     uses: ./.github/workflows/build_and_test.yml
     with:
+      GEOSX_TPL_TAG: ${{ GEOSX_TPL_TAG }}
       DOCKER_REPOSITORY: ${{ matrix.DOCKER_REPOSITORY }}
       CMAKE_BUILD_TYPE: ${{ matrix.CMAKE_BUILD_TYPE }}
       BUILD_AND_TEST_ARGS: ${{ matrix.BUILD_AND_TEST_ARGS }}
@@ -320,7 +323,7 @@ jobs:
   # (must pass one of the CUDA jobs)
   check_that_all_jobs_succeeded:
     runs-on: ubuntu-22.04
-    needs: [check_pull_request_is_not_a_draft, check_pull_request_is_assigned, check_submodules, code_style, documentation, linux_builds, check_ready_for_merge_label, cuda_builds_merge_ready, cuda_builds_merge_not_ready ]
+    needs: [check_pull_request_is_not_a_draft, check_pull_request_is_assigned, check_submodules, code_style, documentation, linux_builds, cuda_builds_merge_ready, cuda_builds_merge_not_ready ]
     if: ${{ always() }}
     env:
       RETURN_VAL: |
@@ -331,10 +334,8 @@ jobs:
         needs.code_style.result == 'success' &&
         needs.documentation.result == 'success' &&
         needs.linux_builds.result == 'success' &&
-        (needs.check_ready_for_merge_label.outputs.output1 == 'not_ready' &&
-        needs.large_cuda_builds_merge_ready.result == 'success')
+        (needs.large_cuda_builds_merge_ready.result == 'success'
         ||
-        (needs.check_ready_for_merge_label.outputs.output1 == 'ready' &&
         needs.large_cuda_builds_merge_not_ready.result == 'success')
         }}
     steps:
