@@ -34,7 +34,7 @@ jobs:
     outputs:
       # output1: ${{ steps.step1.outputs.ready }}
       # output2: ${{ steps.step2.outputs.not_ready }}
-      output1: ${{ format('{0}{1}', steps.step1.outputs.status, steps.step2.outputs.status }}
+      output1: ${{ format('{0}{1}', steps.step1.outputs.status, steps.step2.outputs.status) }}
     steps:
     - name: PR is labeled ready to be merged
       id: step1
