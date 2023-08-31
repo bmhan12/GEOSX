@@ -52,16 +52,16 @@ jobs:
     steps:
     - name: Test echo everything
       run: |
-        echo DOCKER_REPOSITORY is ${env.DOCKER_REPOSITORY}
-        echo CMAKE_BUILD_TYPE is ${env.CMAKE_BUILD_TYPE}
-        echo BUILD_AND_TEST_ARGS is ${env.BUILD_AND_TEST_ARGS}
-        echo HOST_CONFIG is ${env.HOST_CONFIG}
-        echo ENABLE_HYPRE is ${env.ENABLE_HYPRE} 
-        echo ENABLE_HYPRE_DEVICE is ${env.ENABLE_HYPRE_DEVICE}
-        echo ENABLE_TRILINOS is ${env.ENABLE_TRILINOS}
-        echo GCP_BUCKET is ${env.GCP_BUCKET}
-        echo COMMIT is ${env.COMMIT}
-        echo OS is ${env.OS}
+        echo DOCKER_REPOSITORY is ${DOCKER_REPOSITORY}
+        echo CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}
+        echo BUILD_AND_TEST_ARGS is ${BUILD_AND_TEST_ARGS}
+        echo HOST_CONFIG is ${HOST_CONFIG}
+        echo ENABLE_HYPRE is ${ENABLE_HYPRE} 
+        echo ENABLE_HYPRE_DEVICE is ${ENABLE_HYPRE_DEVICE}
+        echo ENABLE_TRILINOS is ${ENABLE_TRILINOS}
+        echo GCP_BUCKET is ${GCP_BUCKET}
+        echo COMMIT is ${COMMIT}
+        echo OS is ${OS}
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
