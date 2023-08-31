@@ -29,6 +29,9 @@ on:
       GCP_BUCKET:
         required: false
         type: string
+      HOST_CONFIG:
+        required: false
+        type: string
       COMMIT:
         required: false
         type: string
@@ -42,5 +45,5 @@ jobs:
     steps:
     - name: Test echo everything
       run: |
-        echo ${DOCKER_REPOSITORY} ${OS} ${CMAKE_BUILD_TYPE} ${BUILD_AND_TEST_ARGS}
+        echo ${DOCKER_REPOSITORY} ${OS} ${CMAKE_BUILD_TYPE} ${BUILD_AND_TEST_ARGS} ${HOST_CONFIG}
         echo ${ENABLE_HYPRE} ${ENABLE_HYPRE_DEVICE} ${ENABLE_TRILINOS} ${GCP_BUCKET} ${COMMIT}
