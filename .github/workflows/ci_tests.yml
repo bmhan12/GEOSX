@@ -32,11 +32,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - name:
-      if: contains( github.event.pull_request.labels.*.name, "flag: ready to be merged")
+      if: contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))
       run: |
         echo "Flag enabled!"
     - name:
-      if: ${{ !(contains( github.event.pull_request.labels.*.name, "flag: ready to be merged")) }}
+      if: ${{ !(contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))) }}
       run: |
         echo "Flag disabled!"
 
