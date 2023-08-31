@@ -329,8 +329,8 @@ jobs:
     - name: Echoing
       run: echo ${RETURN_VAL}
     - name: PR Success
-      if: ${{ env.RETURN_VAL == 'true' }}
+      if: ${{ RETURN_VAL == 'true' }}
       run: "true"
     - name: PR Failure
-      if: ${{ env.RETURN_VAL == 'false' }}
+      if: ${{ RETURN_VAL == 'false' }}
       run: "false"
