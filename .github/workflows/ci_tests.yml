@@ -38,7 +38,7 @@ jobs:
     - name:
       if: ${{ !(contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))) }}
       run: |
-        echo "Flag disabled!"
+        echo "Flag disableds!"
 
   # Matrix jobs will be cancelled if PR is a draft.
   # PR status must be "Open" to run CI.
