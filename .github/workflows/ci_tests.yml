@@ -10,6 +10,36 @@ env:
   GEOSX_TPL_TAG: 237-59
 
 jobs:
+
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+      - name: Dump job context
+        run: echo '${{ toJSON(job) }}'
+      - name: Dump steps context
+        run: echo '${{ toJSON(steps) }}'
+      - name: Dump runner context
+        run: echo '${{ toJSON(runner) }}'
+      - name: Dump strategy context
+        run: echo '${{ toJSON(strategy) }}'
+      - name: Dump matrix context
+        run: echo '${{ toJSON(matrix) }}'
+
+  check_read_for_merge_label:
+    runs-on: ubuntu-22.04
+    steps:
+    - name:
+      if: contains( github.event.pull_request.labels.*.name, "flag: ready to be merged")
+      run: |
+        echo "Flag enabled!"
+    - name:
+      if: ${{ !(contains( github.event.pull_request.labels.*.name, "flag: ready to be merged")) }}
+      run: |
+        echo "Flag disabled!"
+
   # Matrix jobs will be cancelled if PR is a draft.
   # PR status must be "Open" to run CI.
   check_pull_request_is_not_a_draft:
