@@ -253,7 +253,7 @@ jobs:
         echo Success
 
 
-  large_cuda_builds_merge_not_ready:
+  cuda_builds_merge_not_ready:
     name: ${{ matrix.name }}
     needs: [linux_builds, check_ready_for_merge_label]
     if: needs.check_ready_for_merge_label.outputs.output1 == 'not_ready'
@@ -371,9 +371,9 @@ jobs:
       #   echo Success
 
 
-  large_cuda_builds_merge_ready:
+  cuda_builds_merge_ready:
     name: ${{ matrix.name }}
-    needs: [linux_builds, check_ready_for_merge_label]
+    needs: [check_ready_for_merge_label]
     if: needs.check_ready_for_merge_label.outputs.output1 == 'ready'
     strategy:
 
