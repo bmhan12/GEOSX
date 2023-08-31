@@ -2,9 +2,6 @@ name: Build and Test Configuration
 on:
   workflow_call:
     inputs:
-      config-path:
-        required: false
-        type: string
       DOCKER_REPOSITORY:
         required: false
         type: string
@@ -55,7 +52,13 @@ jobs:
         HOST_CONFIG: ${{ inputs.HOST_CONFIG }}
         COMMIT: ${{ inputs.COMMIT }}
       run: |
-        echo ${DOCKER_REPOSITORY} ${CMAKE_BUILD_TYPE}
-        echo ${BUILD_AND_TEST_ARGS} ${HOST_CONFIG}
-        echo ${ENABLE_HYPRE} ${ENABLE_HYPRE_DEVICE}
-        echo ${ENABLE_TRILINOS} ${GCP_BUCKET} ${COMMIT}
+        echo DOCKER_REPOSITORY is ${DOCKER_REPOSITORY}
+        echo CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}
+        echo BUILD_AND_TEST_ARGS is ${BUILD_AND_TEST_ARGS}
+        echo HOST_CONFIG is ${HOST_CONFIG}
+        echo ENABLE_HYPRE is ${ENABLE_HYPRE} 
+        echo ENABLE_HYPRE_DEVICE is ${ENABLE_HYPRE_DEVICE}
+        echo ENABLE_TRILINOS is ${ENABLE_TRILINOS}
+        echo GCP_BUCKET is ${GCP_BUCKET}
+        echo COMMIT is ${COMMIT}
+        echo OS is ${OS}
