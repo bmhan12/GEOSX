@@ -44,6 +44,7 @@ jobs:
     runs-on: ${{ inputs.OS }}
     steps:
     - name: Test echo everything
+      shell: bash
       run: |
         echo ${inputs.DOCKER_REPOSITORY} ${inputs.OS} ${inputs.CMAKE_BUILD_TYPE}
         echo ${inputs.BUILD_AND_TEST_ARGS} ${inputs.HOST_CONFIG}
