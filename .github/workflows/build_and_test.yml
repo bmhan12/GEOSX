@@ -41,9 +41,11 @@ on:
 jobs:
   reusable_workflow_job:
     # runs-on: ubuntu-latest
-    runs-on: ${{ OS }}
+    runs-on: ${{ inputs.OS }}
     steps:
     - name: Test echo everything
       run: |
-        echo ${DOCKER_REPOSITORY} ${OS} ${CMAKE_BUILD_TYPE} ${BUILD_AND_TEST_ARGS} ${HOST_CONFIG}
-        echo ${ENABLE_HYPRE} ${ENABLE_HYPRE_DEVICE} ${ENABLE_TRILINOS} ${GCP_BUCKET} ${COMMIT}
+        echo ${inputs.DOCKER_REPOSITORY} ${inputs.OS} ${inputs.CMAKE_BUILD_TYPE}
+        echo ${inputs.BUILD_AND_TEST_ARGS} ${inputs.HOST_CONFIG}
+        echo ${inputs.ENABLE_HYPRE} ${inputs.ENABLE_HYPRE_DEVICE}
+        echo ${inputs.ENABLE_TRILINOS} ${inputs.GCP_BUCKET} ${inputs.COMMIT}
