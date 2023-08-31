@@ -255,8 +255,6 @@ jobs:
 
   large_cuda_builds_merge_not_ready:
     name: ${{ matrix.name }}
-#    runs-on: ubuntu-22.04
-    # runs-on: ${{ matrix.os }}
     needs: [linux_builds, check_ready_for_merge_label]
     if: needs.check_ready_for_merge_label.outputs.output1 == 'not_ready'
     strategy:
