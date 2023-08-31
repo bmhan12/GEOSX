@@ -327,10 +327,12 @@ jobs:
         }}
     steps:
     - name: Echoing
-      run: echo ${RETURN_VAL}
+      run: echo dog is ${RETURN_VAL}
     - name: PR Success
-      if: ${{ RETURN_VAL == 'true' }}
+      # if: ${{ env.RETURN_VAL == 'true' }}
+      if: ${{ contains(env.RETURN_VAL, 'true') }}
       run: "true"
     - name: PR Failure
-      if: ${{ RETURN_VAL == 'false' }}
+      # if: ${{ env.RETURN_VAL == 'false' }}
+      if: ${{ contains(env.RETURN_VAL, 'false') }}
       run: "false"
