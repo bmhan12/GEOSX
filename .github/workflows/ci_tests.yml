@@ -32,19 +32,20 @@ jobs:
     runs-on: ubuntu-22.04
     # Map a step output to a job output
     outputs:
-      output1: ${{ steps.step1.outputs.ready }}
-      output2: ${{ steps.step2.outputs.not_ready }}
+      # output1: ${{ steps.step1.outputs.ready }}
+      # output2: ${{ steps.step2.outputs.not_ready }}
+      output1: ${{ format('{0}{1}', steps.step1.outputs.status, steps.step2.outputs.status }}
     steps:
     - name: PR is labeled ready to be merged
       id: step1
       if: contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))
       run: |
-        echo "ready=true" >> "$GITHUB_OUTPUT"
+        echo "status=true" >> "$GITHUB_OUTPUT"
     - name: PR is not labeled ready to be merged
       id: step2
       if: ${{ !(contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))) }}
       run: |
-        echo "not_ready=true" >> "$GITHUB_OUTPUT"
+        echo "status=false" >> "$GITHUB_OUTPUT"
 
   test_read_merge_output:
     runs-on: ubuntu-latest
@@ -52,8 +53,8 @@ jobs:
     steps:
       - env:
           OUTPUT1: ${{needs.check_read_for_merge_label.outputs.output1}}
-          OUTPUT2: ${{needs.check_read_for_merge_label.outputs.output2}}
-        run: echo "$OUTPUT1 $OUTPUT2"
+          # OUTPUT2: ${{needs.check_read_for_merge_label.outputs.output2}}
+        run: echo "$OUTPUT1"
 
   # Matrix jobs will be cancelled if PR is a draft.
   # PR status must be "Open" to run CI.
