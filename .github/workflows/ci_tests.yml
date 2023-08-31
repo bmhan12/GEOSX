@@ -327,8 +327,8 @@ jobs:
         }}
     steps:
     - name: PR Success
-      if: ${{ env.RETURN_VAL }}
+      if: ${{ env.RETURN_VAL == 'true' }}
       run: "true"
     - name: PR Failure
-      if: ${{ !(env.RETURN_VAL) }}
+      if: ${{ env.RETURN_VAL == 'false' }}
       run: "false"
