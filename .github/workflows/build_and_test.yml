@@ -39,26 +39,66 @@ on:
 jobs:
   build_and_test:
     runs-on: ${{ inputs.OS }}
+    env:
+      DOCKER_REPOSITORY: ${{ inputs.DOCKER_REPOSITORY }}
+      CMAKE_BUILD_TYPE: ${{ inputs.CMAKE_BUILD_TYPE }}
+      BUILD_AND_TEST_ARGS: ${{ inputs.BUILD_AND_TEST_ARGS }}
+      ENABLE_HYPRE: ${{ inputs.ENABLE_HYPRE }}
+      ENABLE_HYPRE_DEVICE: ${{ inputs.ENABLE_HYPRE_DEVICE }}
+      ENABLE_TRILINOS: ${{ inputs.ENABLE_TRILINOS }}
+      GCP_BUCKET: ${{ inputs.GCP_BUCKET }}
+      HOST_CONFIG: ${{ inputs.HOST_CONFIG }}
+      COMMIT: ${{ inputs.COMMIT }}
     steps:
     - name: Test echo everything
-      env:
-        DOCKER_REPOSITORY: ${{ inputs.DOCKER_REPOSITORY }}
-        CMAKE_BUILD_TYPE: ${{ inputs.CMAKE_BUILD_TYPE }}
-        BUILD_AND_TEST_ARGS: ${{ inputs.BUILD_AND_TEST_ARGS }}
-        ENABLE_HYPRE: ${{ inputs.ENABLE_HYPRE }}
-        ENABLE_HYPRE_DEVICE: ${{ inputs.ENABLE_HYPRE_DEVICE }}
-        ENABLE_TRILINOS: ${{ inputs.ENABLE_TRILINOS }}
-        GCP_BUCKET: ${{ inputs.GCP_BUCKET }}
-        HOST_CONFIG: ${{ inputs.HOST_CONFIG }}
-        COMMIT: ${{ inputs.COMMIT }}
       run: |
-        echo DOCKER_REPOSITORY is ${DOCKER_REPOSITORY}
-        echo CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}
-        echo BUILD_AND_TEST_ARGS is ${BUILD_AND_TEST_ARGS}
-        echo HOST_CONFIG is ${HOST_CONFIG}
-        echo ENABLE_HYPRE is ${ENABLE_HYPRE} 
-        echo ENABLE_HYPRE_DEVICE is ${ENABLE_HYPRE_DEVICE}
-        echo ENABLE_TRILINOS is ${ENABLE_TRILINOS}
-        echo GCP_BUCKET is ${GCP_BUCKET}
-        echo COMMIT is ${COMMIT}
-        echo OS is ${OS}
+        echo DOCKER_REPOSITORY is ${env.DOCKER_REPOSITORY}
+        echo CMAKE_BUILD_TYPE is ${env.CMAKE_BUILD_TYPE}
+        echo BUILD_AND_TEST_ARGS is ${env.BUILD_AND_TEST_ARGS}
+        echo HOST_CONFIG is ${env.HOST_CONFIG}
+        echo ENABLE_HYPRE is ${env.ENABLE_HYPRE} 
+        echo ENABLE_HYPRE_DEVICE is ${env.ENABLE_HYPRE_DEVICE}
+        echo ENABLE_TRILINOS is ${env.ENABLE_TRILINOS}
+        echo GCP_BUCKET is ${env.GCP_BUCKET}
+        echo COMMIT is ${env.COMMIT}
+        echo OS is ${env.OS}
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+        lfs: false
+
+    # - id: 'auth'
+    #   if: env.GCP_BUCKET
+    #   uses: 'google-github-actions/auth@v1'
+    #   with:
+    #     credentials_json: '${{ secrets.GOOGLE_CLOUD_GCP }}'
+    # - name: 'Set up Cloud SDK'
+    #   if: env.GCP_BUCKET
+    #   uses: 'google-github-actions/setup-gcloud@v1'
+    #   with:
+    #     version: '>= 363.0.0'
+
+    - name: Print environment
+      run: printenv
+
+    # # Build and test only
+    # # Builds only the geosx executable (timeout when building tests)
+    # - name: Build and test
+    #   if: ${{ !(env.GCP_BUCKET) }}
+    #   run: ./scripts/ci_build_and_test.sh
+
+    # # Build, test, uploads GEOSX and its TPL to GCP/GCS using gcloud CLI
+    # - name: Build and test and deploy
+    #   if: matrix.GCP_BUCKET
+    #   run: |
+    #     source ./scripts/ci_build_and_test.sh
+    #     TMP_DIR=/tmp
+    #     GEOSX_EXPORT_DIR=GEOSX-and-TPL-${COMMIT:0:7}
+    #     docker cp -a ${CONTAINER_NAME}:${GEOSX_TPL_DIR}/.. ${TMP_DIR}/${GEOSX_EXPORT_DIR}
+    #     GEOSX_BUNDLE=${TMP_DIR}/${GEOSX_EXPORT_DIR}.tar.gz
+    #     tar czf ${GEOSX_BUNDLE} --directory=${TMP_DIR} ${GEOSX_EXPORT_DIR}
+    #     CLOUDSDK_PYTHON=python3 gsutil cp -a public-read ${GEOSX_BUNDLE} gs://${GCP_BUCKET}/
+
+    - name: Build and test
+      run: ./scripts/ci_build_and_test.sh
