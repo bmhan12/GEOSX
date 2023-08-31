@@ -109,7 +109,7 @@ jobs:
 
   linux_builds:
     name: ${{ matrix.name }}
-    needs: [check_pull_request_is_not_a_draft, get-tag]
+    needs: [check_pull_request_is_not_a_draft]
     strategy:
 
       # In-progress jobs will not be cancelled if there is a failure
@@ -180,7 +180,7 @@ jobs:
   # should have identical matrix.include entries.
   cuda_builds_merge_not_ready:
     name: ${{ matrix.name }}
-    needs: [linux_builds, get-tag]
+    needs: [linux_builds]
     if: ${{ !(contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))) }}
     strategy:
 
@@ -243,7 +243,7 @@ jobs:
   # should have identical matrix.include entries.
   cuda_builds_merge_ready:
     name: ${{ matrix.name }}
-    needs: [check_pull_request_is_not_a_draft, get-tag]
+    needs: [check_pull_request_is_not_a_draft]
     if: contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))
     strategy:
 
