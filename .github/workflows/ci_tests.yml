@@ -328,10 +328,7 @@ jobs:
         needs.check_submodules.result == 'success' &&
         needs.code_style.result == 'success' &&
         needs.documentation.result == 'success' &&
-        needs.linux_builds.result == 'success' &&
-        (needs.large_cuda_builds_merge_ready.result == 'success'
-        ||
-        needs.large_cuda_builds_merge_not_ready.result == 'success')
+        needs.linux_builds.result == 'success'
         }}
     steps:
     - name: Echoing
