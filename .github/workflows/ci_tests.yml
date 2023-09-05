@@ -326,6 +326,8 @@ jobs:
         needs.large_cuda_builds_merge_not_ready.result == 'success')
         }}
     steps:
+    - name: Echoing
+      run: echo RETURN_VAL is ${RETURN_VAL}
     - name: PR Success
       if: ${{ contains(env.RETURN_VAL, 'true') }}
       run: "true"
