@@ -106,7 +106,5 @@ jobs:
     #     tar czf ${GEOSX_BUNDLE} --directory=${TMP_DIR} ${GEOSX_EXPORT_DIR}
     #     CLOUDSDK_PYTHON=python3 gsutil cp -a public-read ${GEOSX_BUNDLE} gs://${GCP_BUCKET}/
 
-    - name: Return true
-      run: "true"
-    # - name: Build and test
-      # run: ./scripts/ci_build_and_test.sh
+    - name: Build and test
+      run: ./scripts/ci_build_and_test.sh
