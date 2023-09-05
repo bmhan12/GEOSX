@@ -329,15 +329,15 @@ jobs:
         needs.code_style.result == 'success' &&
         needs.documentation.result == 'success' &&
         needs.linux_builds.result == 'success' &&
-        (needs.large_cuda_builds_merge_ready.result == 'success' ||
-        needs.large_cuda_builds_merge_not_ready.result == 'success')
+        (needs.cuda_builds_merge_ready.result == 'success' ||
+        needs.cuda_builds_merge_not_ready.result == 'success')
         }}
     steps:
     - name: Echoing
       run: |
         echo RETURN_VAL is ${RETURN_VAL}
-        echo merge ready result is ${{ needs.large_cuda_builds_merge_ready.result }}
-        echo merge not ready result is ${{ needs.large_cuda_builds_merge_not_ready.result }}
+        echo merge ready result is ${{ needs.cuda_builds_merge_ready.result }}
+        echo merge not ready result is ${{ needs.cuda_builds_merge_not_ready.result }}
     - name: PR Success
       if: ${{ contains(env.RETURN_VAL, 'true') }}
       run: "true"
