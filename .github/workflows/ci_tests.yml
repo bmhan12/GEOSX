@@ -165,7 +165,7 @@ jobs:
   # linux jobs to pass before running.
   cuda_builds_merge_not_ready:
     name: ${{ matrix.name }}
-    needs: [linux_builds]
+    needs: [check_pull_request_is_not_a_draft, linux_builds]
     if: ${{ !(contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))) }}
     strategy:
 
