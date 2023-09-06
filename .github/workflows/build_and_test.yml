@@ -3,20 +3,18 @@ on:
   workflow_call:
     inputs:
       GEOSX_TPL_TAG:
-        required: false
+        required: true
         type: string
-        default: ''
       DOCKER_REPOSITORY:
-        required: false
-        type: string
-        default: ''
-      OS:
-        required: false
+        required: true
         type: string
       CMAKE_BUILD_TYPE:
-        required: false
+        required: true
         type: string
       BUILD_AND_TEST_ARGS:
+        required: false
+        type: string
+      HOST_CONFIG:
         required: false
         type: string
       ENABLE_HYPRE:
@@ -31,11 +29,11 @@ on:
       GCP_BUCKET:
         required: false
         type: string
-      HOST_CONFIG:
-        required: false
-        type: string
       COMMIT:
-        required: false
+        required: true
+        type: string
+      OS:
+        required: true
         type: string
     secrets:
       GOOGLE_CLOUD_GCP:
@@ -55,19 +53,6 @@ jobs:
       COMMIT: ${{ inputs.COMMIT }}
       GEOSX_TPL_TAG: ${{ inputs.GEOSX_TPL_TAG }}
     steps:
-    - name: Test echo everything
-      run: |
-        echo DOCKER_REPOSITORY is ${DOCKER_REPOSITORY}
-        echo CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}
-        echo BUILD_AND_TEST_ARGS is ${BUILD_AND_TEST_ARGS}
-        echo HOST_CONFIG is ${HOST_CONFIG}
-        echo ENABLE_HYPRE is ${ENABLE_HYPRE} 
-        echo ENABLE_HYPRE_DEVICE is ${ENABLE_HYPRE_DEVICE}
-        echo ENABLE_TRILINOS is ${ENABLE_TRILINOS}
-        echo GCP_BUCKET is ${GCP_BUCKET}
-        echo COMMIT is ${COMMIT}
-        echo OS is ${OS}
-        echo GEOSX_TPL_TAG is ${GEOSX_TPL_TAG}
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
