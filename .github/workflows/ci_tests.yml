@@ -85,7 +85,7 @@ jobs:
            | jq '.labels')
         ready_label="ready to be merged"
         echo "Is PR Ready to be Merged? (Check for $ready_label label)"
-        echo "Labels found are:\n $labels"
+        echo "Labels found are: $labels"
         if [[ $labels == *"$ready_label"* ]]; then "true" ; else "false"; fi
 
   check_submodules:
@@ -216,8 +216,9 @@ jobs:
   # CUDA jobs should only be run if PR is ready to merge.
   cuda_builds_merge_ready:
     name: ${{ matrix.name }}
-    needs: [check_pull_request_is_not_a_draft]
-    if: contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))
+    needs:
+    - check_pull_request_is_not_a_draft
+    - check_ready_to_be_merged
     strategy:
 
       # In-progress jobs will not be cancelled if there is a failure
@@ -280,6 +281,7 @@ jobs:
     - check_pull_request_is_not_a_draft
     - check_pull_request_is_assigned
     - check_submodules
+    - check_ready_to_be_merged
     - code_style
     - documentation
     - linux_builds
