@@ -71,6 +71,22 @@ jobs:
         echo $id
         if [[ $id != null ]]; then "true" ; else "false"; fi
 
+  # PR must be labeled "ready to be merged" to run CUDA jobs.
+  # This job will fail if this is not the case.
+  # Note: Label should only be added if PR is in merge queue.
+  check_ready_to_be_merged:
+    needs: [check_pull_request_is_not_a_draft]
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Check that the PR is ready to be merged
+      run: |
+        labels=$(curl -H "Accept: application/vnd.github+json" \
+           https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.number }} \
+           | jq '.labels')
+        echo "Is PR Ready to be Merged? (Check for Label)"
+        echo labels
+        if [[ $labels != null ]]; then "true" ; else "false"; fi
+
   check_submodules:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
