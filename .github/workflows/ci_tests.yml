@@ -84,7 +84,7 @@ jobs:
            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.number }} \
            | jq '.labels')
         echo "Is PR Ready to be Merged? (Check for Label)"
-        echo labels
+        echo $labels
         if [[ $labels != null ]]; then "true" ; else "false"; fi
 
   check_submodules:
