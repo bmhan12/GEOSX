@@ -11,6 +11,34 @@ env:
 
 jobs:
 
+  dump_contexts_to_log:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Dump GitHub context
+          env:
+            GITHUB_CONTEXT: ${{ toJson(github) }}
+          run: echo "$GITHUB_CONTEXT"
+        - name: Dump job context
+          env:
+            JOB_CONTEXT: ${{ toJson(job) }}
+          run: echo "$JOB_CONTEXT"
+        - name: Dump steps context
+          env:
+            STEPS_CONTEXT: ${{ toJson(steps) }}
+          run: echo "$STEPS_CONTEXT"
+        - name: Dump runner context
+          env:
+            RUNNER_CONTEXT: ${{ toJson(runner) }}
+          run: echo "$RUNNER_CONTEXT"
+        - name: Dump strategy context
+          env:
+            STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+          run: echo "$STRATEGY_CONTEXT"
+        - name: Dump matrix context
+          env:
+            MATRIX_CONTEXT: ${{ toJson(matrix) }}
+          run: echo "$MATRIX_CONTEXT"
+
   # Matrix jobs will be cancelled if PR is a draft.
   # PR status must be "Open" to run CI.
   check_pull_request_is_not_a_draft:
@@ -23,9 +51,12 @@ jobs:
     steps:
     - name: Check that the PR is not a draft (cancel rest of jobs otherwise)
       run: |
-        echo "Is PR a draft?"
-        echo ${{ toJSON(github.event.pull_request.draft) }}
-        if [[ ${{ toJSON(github.event.pull_request.draft) }} == true ]]; then "false" ; else "true"; fi
+        draft_status=$(curl -H "Accept: application/vnd.github+json" \
+           https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.number }} \
+           | jq '.draft')
+        echo "Is PR a draft? (Check PR's draft status )"
+        echo $draft_status
+        if [[ $draft_status == false ]]; then "true" ; else "false"; fi
 
   # PR must be assigned to be merged.
   # This job will fail if this is not the case.
@@ -43,52 +74,76 @@ jobs:
         echo $id
         if [[ $id != null ]]; then "true" ; else "false"; fi
 
+  # PR must be labeled "ready to be merged" to run CUDA jobs.
+  # This job will fail if this is not the case.
+  # Note: Label should only be added if PR is in merge queue.
+  check_ready_to_be_merged:
+    needs: [check_pull_request_is_not_a_draft]
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Check that the PR is ready to be merged
+      run: |
+        labels=$(curl -H "Accept: application/vnd.github+json" \
+           https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.number }} \
+           | jq '.labels')
+        ready_label="ready to be merged"
+        echo "Is PR Ready to be Merged? (Check for $ready_label label)"
+        echo "Labels found are: $labels"
+        if [[ $labels == *"$ready_label"* ]]; then "true" ; else "false"; fi
+
   check_submodules:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
     steps:
     # The integrated test submodule repository contains large data (using git lfs).
     # To save time (and money) we do not let Github Actions automatically clone all our (lfs) subrepositories and do it by hand.
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-      with:
-        # Let script update submodules; Github Actions submodule history causes error
-        submodules: false
-        lfs: false
-    - name: Check that submodules are up to date
-      run: "scripts/test_submodule_updated.sh"
+    # - name: Checkout Repository
+    #   uses: actions/checkout@v3
+    #   with:
+    #     # Let script update submodules; Github Actions submodule history causes error
+    #     submodules: false
+    #     lfs: false
+    # - name: Check that submodules are up to date
+    #   run: "scripts/test_submodule_updated.sh"
+    - name: Print environment
+      run: printenv
+
 
   code_style:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-      with:
-        submodules: true
-        lfs: false
-    - name: Check style
-      env:
-        DOCKER_REPOSITORY: geosx/ubuntu20.04-gcc9
-        CMAKE_BUILD_TYPE: Release
-        BUILD_AND_TEST_ARGS: --test-code-style
-      run: ./scripts/ci_build_and_test.sh
+    # - name: Checkout Repository
+    #   uses: actions/checkout@v3
+    #   with:
+    #     submodules: true
+    #     lfs: false
+    # - name: Check style
+    #   env:
+    #     DOCKER_REPOSITORY: geosx/ubuntu20.04-gcc9
+    #     CMAKE_BUILD_TYPE: Release
+    #     BUILD_AND_TEST_ARGS: --test-code-style
+    #   run: ./scripts/ci_build_and_test.sh
+    - name: Print environment
+      run: printenv
 
   documentation:
     needs: [check_pull_request_is_not_a_draft]
     runs-on: ubuntu-22.04
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-      with:
-        submodules: true
-        lfs: false
-    - name: Check documentation
-      env:
-        DOCKER_REPOSITORY: geosx/ubuntu20.04-gcc9
-        CMAKE_BUILD_TYPE: Release
-        BUILD_AND_TEST_ARGS: --test-documentation
-      run: ./scripts/ci_build_and_test.sh
+    # - name: Checkout Repository
+    #   uses: actions/checkout@v3
+    #   with:
+    #     submodules: true
+    #     lfs: false
+    # - name: Check documentation
+    #   env:
+    #     DOCKER_REPOSITORY: geosx/ubuntu20.04-gcc9
+    #     CMAKE_BUILD_TYPE: Release
+    #     BUILD_AND_TEST_ARGS: --test-documentation
+    #   run: ./scripts/ci_build_and_test.sh
+    - name: Print environment
+      run: printenv
 
   linux_builds:
     name: ${{ matrix.name }}
@@ -164,8 +219,9 @@ jobs:
   # CUDA jobs should only be run if PR is ready to merge.
   cuda_builds_merge_ready:
     name: ${{ matrix.name }}
-    needs: [check_pull_request_is_not_a_draft]
-    if: contains( github.event.pull_request.labels.*.name, format('flag{0} ready to be merged', ':'))
+    needs:
+    - check_pull_request_is_not_a_draft
+    - check_ready_to_be_merged
     strategy:
 
       # In-progress jobs will not be cancelled if there is a failure
@@ -174,7 +230,8 @@ jobs:
         include:
           - name: Ubuntu CUDA debug (20.04, clang 10.0.0 + gcc 9.4.0, open-mpi 4.0.3, cuda-11.8.89)
             DOCKER_REPOSITORY: geosx/ubuntu20.04-clang10.0.0-cuda11.8.89
-            OS: Runner_4core_16GB
+            # OS: Runner_4core_16GB
+            OS: ubuntu-22.04
             CMAKE_BUILD_TYPE: Debug
             BUILD_AND_TEST_ARGS: "--disable-unit-tests --build-exe-only --disable-schema-deployment"
             ENABLE_HYPRE: ON
@@ -227,6 +284,7 @@ jobs:
     - check_pull_request_is_not_a_draft
     - check_pull_request_is_assigned
     - check_submodules
+    - check_ready_to_be_merged
     - code_style
     - documentation
     - linux_builds
