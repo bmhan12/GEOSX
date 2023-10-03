@@ -54,7 +54,7 @@ jobs:
         draft_status=$(curl -H "Accept: application/vnd.github+json" \
            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.number }} \
            | jq '.draft')
-        echo "Is PR not a draft? (Check PR's draft status )"
+        echo "Is PR a draft? (Check PR's draft status )"
         echo $draft_status
         if [[ $draft_status == false ]]; then "true" ; else "false"; fi
 
